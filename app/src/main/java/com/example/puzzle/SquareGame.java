@@ -9,20 +9,29 @@ import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.ListIterator;
 import java.util.Random;
 
 class Piece {
+    public static final int borderSize = 5;
+
     ImageView image;
     Bitmap originalBitmap;
+    int targeti, targetj;
+    int[] outerColor = new int[4], innerColor = new int[4];
 
     Piece(Bitmap imageBitmap, int pos, SquareGame context) {
         int i = pos / SquareGame.numHorizontal;
         int j = pos % SquareGame.numHorizontal;
+        this.targeti = i;
+        this.targetj = j;
 
         int subImageWidth = imageBitmap.getWidth() / SquareGame.numHorizontal;
         int subImageHeight = imageBitmap.getHeight() / SquareGame.numVertical;
@@ -37,31 +46,162 @@ class Piece {
         this.originalBitmap = scaledOriginal;
 
         this.image = new ImageView(context);
-
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(SquareGame.pieceWidth, SquareGame.pieceHeight);
-//        params.leftMargin = j * SquareGame.pieceWidth;
-//        params.topMargin = i * SquareGame.pieceHeight;
-
         params.leftMargin = getRandomPosition(context.getTotalScreenWidth(), SquareGame.pieceWidth);
         params.topMargin = getRandomPosition(context.getTotalScreenHeight() - context.getStatusBarHeight(), SquareGame.pieceHeight);
-
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         this.image.setLayoutParams(params);
-        this.image.setImageBitmap(this.originalBitmap);
 
-        Log.i(SquareGame.TAG, Integer.toString(pos));
-        Log.i(SquareGame.TAG, Integer.toString(i));
-        Log.i(SquareGame.TAG, Integer.toString(j));
-        Log.i(SquareGame.TAG, Integer.toString(params.leftMargin));
-        Log.i(SquareGame.TAG, Integer.toString(params.topMargin));;
-        Log.i(SquareGame.TAG, "=============================");
+        this.getColors(i, j, this.outerColor, this.innerColor, context);
+        this.drawMarginIf(new boolean[] {true, true, true, true});
     }
 
     public int getRandomPosition(int totalSize, int imageSize) {
         Random random = new Random();
 
         return random.nextInt(totalSize - imageSize + 1);
+    }
+
+    public void update(Piece[][] pieceMatrix, boolean updateNeighbours) {
+        int[] dx = new int[] {-1, 0, +1, 0};
+        int[] dy = new int[] {0, +1, 0, -1};
+        boolean[] shouldDraw = new boolean[] {true, true, true, true};
+
+        for (int k = 0; k < 4; ++k) {
+            int nx = this.targeti + dx[k];
+            int ny = this.targetj + dy[k];
+
+            if (!(0 <= nx && nx < SquareGame.numVertical && 0 <= ny && ny < SquareGame.numHorizontal)) {
+                continue;
+            }
+
+            if (pieceMatrix[nx][ny] != null) {
+                shouldDraw[k] = false;
+
+                if (updateNeighbours) {
+                    pieceMatrix[nx][ny].update(pieceMatrix, false);
+                }
+            }
+        }
+
+        this.drawMarginIf(shouldDraw);
+    }
+
+    public void drawMarginIf(boolean[] shouldDraw) {
+        Bitmap currentBitmap = this.originalBitmap.copy(this.originalBitmap.getConfig(), true);
+
+        for (int marginIndex = 0; marginIndex < 4; ++marginIndex) {
+            if (shouldDraw[marginIndex]) {
+                this.drawMargin(currentBitmap, this.outerColor[marginIndex], this.innerColor[marginIndex], marginIndex);
+            }
+        }
+
+        this.image.setImageBitmap(currentBitmap);
+    }
+
+    public void getColors(int i, int j, int[] outerColor, int[] innerColor, Context context) {
+        for (int k = 0; k < 4; ++k) {
+            outerColor[k] = context.getResources().getColor(R.color.outerPieceColor);
+            innerColor[k] = context.getResources().getColor(R.color.innerPieceColor);
+        }
+
+        if (i == 0) {
+            outerColor[0] = context.getResources().getColor(R.color.outerMarginColor);
+            innerColor[0] = context.getResources().getColor(R.color.innerMarginColor);
+        }
+        if (i == SquareGame.numVertical - 1) {
+            outerColor[2] = context.getResources().getColor(R.color.outerMarginColor);
+            innerColor[2] = context.getResources().getColor(R.color.innerMarginColor);
+        }
+
+        if (j == 0) {
+            outerColor[3] = context.getResources().getColor(R.color.outerMarginColor);
+            innerColor[3] = context.getResources().getColor(R.color.innerMarginColor);
+        }
+        if (j == SquareGame.numHorizontal - 1) {
+            outerColor[1] = context.getResources().getColor(R.color.outerMarginColor);
+            innerColor[1] = context.getResources().getColor(R.color.innerMarginColor);
+        }
+    }
+
+    public void drawMargin(Bitmap bitmap, int outerColor, int innerColor, int marginIndex) {
+        if (marginIndex == 0) {
+            this.drawTopMargin(bitmap, outerColor, innerColor);
+        }
+        else if (marginIndex == 1) {
+            this.drawRightMargin(bitmap, outerColor, innerColor);
+        }
+        else if (marginIndex == 2) {
+            this.drawBottomMargin(bitmap, outerColor, innerColor);
+        }
+        else if (marginIndex == 3) {
+            this.drawLeftMargin(bitmap, outerColor, innerColor);
+        }
+    }
+
+    public void drawTopMargin(Bitmap bitmap, int outerColor, int innerColor) {
+        for (int x = 0; x < bitmap.getWidth(); ++x) {
+            for (int y = 0; y < Piece.borderSize; ++y) {
+                int color;
+                if (y % 2 == 0) {
+                    color = outerColor;
+                }
+                else {
+                    color = innerColor;
+                }
+
+                bitmap.setPixel(x, y, color);
+            }
+        }
+    }
+
+    public void drawBottomMargin(Bitmap bitmap, int outerColor, int innerColor) {
+        for (int x = 0; x < bitmap.getWidth(); ++x) {
+            for (int y = 0; y < Piece.borderSize; ++y) {
+                int color;
+                if (y % 2 == 0) {
+                    color = outerColor;
+                }
+                else {
+                    color = innerColor;
+                }
+
+                bitmap.setPixel(x, bitmap.getHeight() - y - 1, color);
+            }
+        }
+    }
+
+    public void drawLeftMargin(Bitmap bitmap, int outerColor, int innerColor) {
+        for (int x = 0; x < Piece.borderSize; ++x) {
+            for (int y = 0; y < bitmap.getHeight(); ++y) {
+                int color;
+                if (x % 2 == 0) {
+                    color = outerColor;
+                }
+                else {
+                    color = innerColor;
+                }
+
+                bitmap.setPixel(x, y, color);
+            }
+        }
+    }
+
+    public void drawRightMargin(Bitmap bitmap, int outerColor, int innerColor) {
+        for (int x = 0; x < Piece.borderSize; ++x) {
+            for (int y = 0; y < bitmap.getHeight(); ++y) {
+                int color;
+                if (x % 2 == 0) {
+                    color = outerColor;
+                }
+                else {
+                    color = innerColor;
+                }
+
+                bitmap.setPixel(bitmap.getWidth() - x - 1, y, color);
+            }
+        }
     }
 }
 
@@ -76,6 +216,10 @@ public class SquareGame extends AppCompatActivity {
     static int pieceHeight = 0;
 
     int minX, minY, maxX, maxY;
+    boolean hasAttached = false;
+    int attachedOffsetX = 0, attachedOffsetY = 0;
+
+    Piece[][] pieceMatrix = new Piece[SquareGame.numVertical][SquareGame.numHorizontal];
 
     RelativeLayout topLayout = null;
     LinkedList<Piece> pieceList = null;
@@ -104,11 +248,14 @@ public class SquareGame extends AppCompatActivity {
         setContentView(R.layout.activity_square_game);
 
         SquareGame.TAG += this.getClass().getSimpleName();
-        this.setLimits();
         this.topLayout = findViewById(R.id.squareGameLayout);
 
+        Log.i(TAG, "statusBarHeight: " + this.getStatusBarHeight());
         SquareGame.pieceWidth = SquareGame.getTotalScreenWidth() / numHorizontal;
         SquareGame.pieceHeight = (SquareGame.getTotalScreenHeight() - this.getStatusBarHeight()) / numVertical;
+        this.setLimits();
+        Log.i(TAG, "statusBarHeight: " + this.getStatusBarHeight());
+        Log.i(TAG, "minY: " + this.minY);
 
         Bitmap scaledImage = this.getScaledImage();
 
@@ -131,9 +278,9 @@ public class SquareGame extends AppCompatActivity {
 
     public void setLimits() {
         this.minX = 0;
-        this.minY = this.getStatusBarHeight();
-        this.maxX = this.getTotalScreenWidth();
-        this.maxY = this.getTotalScreenHeight();
+        this.minY = 0;
+        this.maxX = this.getTotalScreenWidth() - SquareGame.pieceWidth;
+        this.maxY = (this.getTotalScreenHeight() - this.getStatusBarHeight()) - SquareGame.pieceHeight;
     }
 
     public Bitmap getScaledImage() {
@@ -155,5 +302,131 @@ public class SquareGame extends AppCompatActivity {
         }
 
         return scaledImage;
+    }
+
+
+
+
+
+
+    public void changePosition(View v, float x, float y) {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) v.getLayoutParams();
+
+        int newX = (int)x - this.attachedOffsetX;
+        newX = Math.max(newX, this.minX);
+        newX = Math.min(newX, this.maxX);
+
+        int newY = (int)y - this.attachedOffsetY - this.getStatusBarHeight();
+//        Log.i(TAG, "newY = " + newY); ////////////////////////////////////////////////////////////////////////////////////
+        newY = Math.max(newY, this.minY);
+        newY = Math.min(newY, this.maxY);
+
+        params.leftMargin = newX;
+        params.topMargin = newY;
+        v.requestLayout();
+    }
+
+    private boolean pointIsInsideView(View v, int x, int y) {
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) v.getLayoutParams();
+
+        if (!(params.leftMargin <= x && x < params.leftMargin + params.width)) {
+            return false;
+        }
+        if (!(params.topMargin <= y && y < params.topMargin + params.height)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+//            String str = "The screen has been touched at: " + event.getX() + ", " + event.getY();
+//            Log.i("myTag", str);
+//            Log.i("myTag", "============================");
+
+            ListIterator<Piece> it = this.pieceList.listIterator();
+            while (it.hasNext()) {
+                Piece piece = it.next();
+                int eventX = (int)event.getX();
+                int eventY = (int)event.getY();
+
+                if (this.pointIsInsideView(piece.image, eventX, eventY)) {
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) piece.image.getLayoutParams();
+                    this.attachedOffsetX = eventX - params.leftMargin;
+                    this.attachedOffsetY = eventY - (params.topMargin + this.getStatusBarHeight());
+                    Log.i(TAG, "attachedOffsetX = " + this.attachedOffsetX); ////////////////////////////////////////////////////////////////
+                    Log.i(TAG, "attachedOffsetY = " + this.attachedOffsetY); ////////////////////////////////////////////////////////////////
+
+                    it.remove();
+                    this.pieceList.addFirst(piece);
+
+                    this.hasAttached = true;
+                    piece.image.bringToFront();
+
+                    break;
+                }
+            }
+        }
+        else if (event.getAction() == MotionEvent.ACTION_UP) {
+//            String str = "The screen has been released at: " + event.getX() + ", " + event.getY();
+//            Log.i("myTag", str);
+//            Log.i("myTag", "============================");
+
+            if (this.hasAttached == false) {
+                return true;
+            }
+
+            Piece piece = this.pieceList.getFirst();
+            int eventX = (int)event.getX();
+            int eventY = (int)event.getY();
+
+            int cornerX = (int)eventX - this.attachedOffsetX;
+            cornerX = Math.max(cornerX, this.minX);
+            cornerX = Math.min(cornerX, this.maxX);
+
+            int cornerY = (int)eventY - this.attachedOffsetY - this.getStatusBarHeight();
+            cornerY = Math.max(cornerY, this.minY);
+            cornerY = Math.min(cornerY, this.maxY);
+
+            int errorX = SquareGame.pieceWidth / 4;
+            int errorY = SquareGame.pieceHeight / 4;
+
+            int targetX = piece.targetj * SquareGame.pieceWidth;
+            int targetY = piece.targeti * SquareGame.pieceHeight;
+
+            if (Math.abs(targetX - cornerX) <= errorX && Math.abs(targetY - cornerY) <= errorY) {
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) piece.image.getLayoutParams();
+                params.leftMargin = targetX;
+                params.topMargin = targetY;
+
+                this.pieceMatrix[piece.targeti][piece.targetj] = piece;
+
+                piece.update(this.pieceMatrix, true);
+                this.pieceList.removeFirst();
+
+                Iterator<Piece> it = this.pieceList.descendingIterator();
+                while (it.hasNext()) {
+                    Piece currentPiece = it.next();
+                    ImageView image = currentPiece.image;
+                    image.bringToFront();
+                }
+
+                this.topLayout.requestLayout();
+            }
+
+            this.hasAttached = false;
+        }
+        else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+            float eventX = event.getX();
+            float eventY = event.getY();
+            if (this.hasAttached) {
+                this.changePosition(this.pieceList.getFirst().image, eventX, eventY);
+            }
+
+            Log.i(TAG, "Movement at: " + Float.toString(eventX) + ", " + Float.toString(eventY));
+        }
+
+        return true;
     }
 }
