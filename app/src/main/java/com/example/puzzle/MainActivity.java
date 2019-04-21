@@ -3,6 +3,7 @@ package com.example.puzzle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
     public static String COMMON_TAG = "puzzletag";
@@ -16,5 +17,9 @@ public class MainActivity extends AppCompatActivity {
         TAG += this.getClass().getSimpleName();
 
         Log.i(TAG, "test");
+    }
+
+    public void test(View view) {
+
     }
 }
