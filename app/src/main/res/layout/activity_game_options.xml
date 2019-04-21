@@ -91,12 +91,14 @@
                 <ImageView
                     android:id="@+id/imageView1"
                     style="@style/ImageSelectView"
-                    app:srcCompat="@drawable/p1" />
+                    app:srcCompat="@drawable/p1small"
+
+                    />
 
                 <ImageView
                     android:id="@+id/imageView2"
                     style="@style/ImageSelectView"
-                    app:srcCompat="@drawable/p2" />
+                    app:srcCompat="@drawable/p2small" />
 
             </LinearLayout>
         </ScrollView>
