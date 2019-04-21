@@ -389,8 +389,8 @@ public class SquareGame extends AppCompatActivity {
             cornerY = Math.max(cornerY, this.minY);
             cornerY = Math.min(cornerY, this.maxY);
 
-            int errorX = SquareGame.pieceWidth / 4;
-            int errorY = SquareGame.pieceHeight / 4;
+            int errorX = SquareGame.pieceWidth / 3;
+            int errorY = SquareGame.pieceHeight / 3;
 
             int targetX = piece.targetj * SquareGame.pieceWidth;
             int targetY = piece.targeti * SquareGame.pieceHeight;
