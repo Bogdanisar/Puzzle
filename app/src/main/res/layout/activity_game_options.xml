@@ -18,6 +18,10 @@
         android:layout_marginBottom="32dp"
         android:background="#BFFFFFFF"
         android:orientation="vertical"
+        android:paddingLeft="10sp"
+        android:paddingTop="10sp"
+        android:paddingRight="10sp"
+        android:paddingBottom="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -25,22 +29,88 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
-        <EditText
-            android:id="@+id/inputRowNumber"
+        <TextView
+            android:id="@+id/dimensionInputTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:gravity="center_horizontal"
-            android:hint="Row Number"
-            android:inputType="numberSigned" />
+            android:text="Enter Puzzle Dimension:"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/InputColumnNumber"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
             android:gravity="center_horizontal"
-            android:hint="Column Number"
-            android:inputType="numberSigned" />
+            android:orientation="vertical"
+            android:paddingLeft="20sp"
+            android:paddingRight="20sp">
+
+            <EditText
+                android:id="@+id/inputRowNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="center_horizontal|center_vertical"
+                android:hint="Row Number"
+                android:inputType="numberSigned" />
+
+            <EditText
+                android:id="@+id/inputColumnNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:gravity="center_horizontal"
+                android:hint="Column Number"
+                android:inputType="numberSigned" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/imageSelectTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10sp"
+            android:text="Select Image:"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="317dp"
+            android:layout_weight="1"
+            android:background="#40000000"
+            android:paddingLeft="10sp"
+            android:paddingTop="10sp"
+            android:paddingRight="10sp"
+            android:paddingBottom="10sp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/imageView1"
+                    style="@style/ImageSelectView"
+                    app:srcCompat="@drawable/p1" />
+
+                <ImageView
+                    android:id="@+id/imageView2"
+                    style="@style/ImageSelectView"
+                    app:srcCompat="@drawable/p2" />
+
+            </LinearLayout>
+        </ScrollView>
+
+        <Button
+            android:id="@+id/buttonStartGame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10sp"
+            android:background="#991231"
+            android:text="start puzzle"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:onClick="startGame"/>
+
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
