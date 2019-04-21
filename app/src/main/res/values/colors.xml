@@ -4,9 +4,9 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
-    <color name="innerPieceColor">#000000</color>
-    <color name="outerPieceColor">#FFFFFF</color>
+    <color name="innerPieceColor">#FFFFFF</color>
+    <color name="outerPieceColor">#000000</color>
 
-    <color name="innerMarginColor">#FF0000</color>
-    <color name="outerMarginColor">#FF0000</color>
+    <color name="innerMarginColor">#0000FF</color>
+    <color name="outerMarginColor">#000000</color>
 </resources>
