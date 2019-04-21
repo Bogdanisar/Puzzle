@@ -1,5 +1,6 @@
 package com.example.puzzle;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +21,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void test(View view) {
-
+        Intent intent = new Intent(this, SquareGame.class);
+//        String message = mMessageEditText.getText().toString();
+//        intent.putExtra(EXTRA_MESSAGE, message);
+//        startActivityForResult(intent, TEXT_REQUEST);
+        startActivity(intent);
     }
 }
