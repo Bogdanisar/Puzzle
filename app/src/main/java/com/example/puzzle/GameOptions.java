@@ -2,32 +2,34 @@ package com.example.puzzle;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 public class GameOptions extends AppCompatActivity {
+    public static String COMMON_TAG = "puzzletag";
+    public static String TAG = MainActivity.COMMON_TAG;
     private EditText rowInput;
     private EditText columnInput;
-    private String imageSelected = null;
-    private Integer imageSelectedId = null;
+    private Integer imageSelected = null;
+    private Integer imageSelectedPrior = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_options);
 
+        TAG += this.getClass().getSimpleName();
+
         rowInput = findViewById(R.id.inputRowNumber);
         columnInput = findViewById(R.id.inputColumnNumber);
     }
 
     public void startGame(View view) {
-        Intent intent = new Intent(this, SquareGame.class);
-
         String rowsEntered = rowInput.getText().toString();
         if(rowsEntered.equals("")){
             Toast toast = Toast.makeText(getApplicationContext(), "No Row Number Entered!", Toast.LENGTH_LONG);
@@ -41,8 +43,8 @@ public class GameOptions extends AppCompatActivity {
             return;
         }
 
-        int rowNumber = Integer.parseInt(rowsEntered);
-        int columnNumber = Integer.parseInt(columnsEntered);
+        Integer rowNumber = Integer.parseInt(rowsEntered);
+        Integer columnNumber = Integer.parseInt(columnsEntered);
 
         boolean incorrectFlag = false;
         String message = null;
@@ -75,9 +77,13 @@ public class GameOptions extends AppCompatActivity {
             return;
         }
 
+        Intent intent = new Intent(this, SquareGame.class);
+        Log.i(GameOptions.TAG, this.imageSelected.toString());
+        Log.i(GameOptions.TAG, rowNumber.toString());
+        Log.i(GameOptions.TAG, columnNumber.toString());
         intent.putExtra("rowNumber", rowNumber);
         intent.putExtra("columnNumber", columnNumber);
-        intent.putExtra("imageSelected", imageSelected);
+        intent.putExtra("imageSelected", this.imageSelected);
         startActivity(intent);
 
         //in SquareGame Activity: String value = getIntent().getExtras().getString(key);
@@ -98,7 +104,7 @@ public class GameOptions extends AppCompatActivity {
         }
 
         if(imageSelected != null){
-            ImageView currentSelectedImage = findViewById(imageSelectedId);
+            ImageView currentSelectedImage = findViewById(imageSelectedPrior);
             removeSelectedImageTheme(currentSelectedImage);
         }
     }
@@ -111,14 +117,14 @@ public class GameOptions extends AppCompatActivity {
         if(view.getId()==R.id.imageView1){
             applySelectedImageTheme(view);
 
-            imageSelected = "@drawable/p1";
-            imageSelectedId = R.id.imageView1;
+            imageSelected = R.drawable.p1;
+            imageSelectedPrior = R.id.imageView1;
             return;
         }
         if(view.getId()==R.id.imageView2){
             applySelectedImageTheme(view);
-            imageSelected = "@drawable/p2";
-            imageSelectedId = R.id.imageView2;
+            imageSelected = R.drawable.p2;
+            imageSelectedPrior = R.id.imageView2;
             return;
         }
     }

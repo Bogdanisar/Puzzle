@@ -7,6 +7,6 @@
     <color name="innerPieceColor">#FFFFFF</color>
     <color name="outerPieceColor">#000000</color>
 
-    <color name="innerMarginColor">#0000FF</color>
+    <color name="innerMarginColor">#FF0000</color>
     <color name="outerMarginColor">#000000</color>
 </resources>

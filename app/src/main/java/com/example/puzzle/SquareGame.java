@@ -1,11 +1,9 @@
 package com.example.puzzle;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -208,9 +206,9 @@ class Piece {
 public class SquareGame extends AppCompatActivity {
     public static String TAG = MainActivity.COMMON_TAG;
 
-    static final int imageId = R.drawable.p1;
-    static final int numHorizontal = 5;
-    static final int numVertical = 5;
+    static int imageId = R.drawable.p1;
+    static int numHorizontal = 5;
+    static int numVertical = 5;
     static final int maxImageWidth = 1000, maxImageHeight = 1000;
     static int pieceWidth = 0;
     static int pieceHeight = 0;
@@ -219,7 +217,7 @@ public class SquareGame extends AppCompatActivity {
     boolean hasAttached = false;
     int attachedOffsetX = 0, attachedOffsetY = 0;
 
-    Piece[][] pieceMatrix = new Piece[SquareGame.numVertical][SquareGame.numHorizontal];
+    Piece[][] pieceMatrix;
 
     RelativeLayout topLayout = null;
     LinkedList<Piece> pieceList = null;
@@ -246,6 +244,8 @@ public class SquareGame extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_square_game);
+
+        this.setParametersForGame();
 
         SquareGame.TAG += this.getClass().getSimpleName();
         this.topLayout = findViewById(R.id.squareGameLayout);
@@ -276,11 +276,18 @@ public class SquareGame extends AppCompatActivity {
         topLayout.requestLayout();
     }
 
+    private void setParametersForGame() {
+        SquareGame.imageId = (Integer)this.getIntent().getExtras().get("imageSelected");
+        SquareGame.numVertical = (Integer)this.getIntent().getExtras().get("columnNumber");
+        SquareGame.numHorizontal = (Integer)this.getIntent().getExtras().get("rowNumber");
+        this.pieceMatrix = new Piece[SquareGame.numVertical][SquareGame.numHorizontal];
+    }
+
     public void setLimits() {
         this.minX = 0;
         this.minY = 0;
-        this.maxX = this.getTotalScreenWidth() - SquareGame.pieceWidth;
-        this.maxY = (this.getTotalScreenHeight() - this.getStatusBarHeight()) - SquareGame.pieceHeight;
+        this.maxX = SquareGame.getTotalScreenWidth() - SquareGame.pieceWidth;
+        this.maxY = (SquareGame.getTotalScreenHeight() - this.getStatusBarHeight()) - SquareGame.pieceHeight;
     }
 
     public Bitmap getScaledImage() {
@@ -355,8 +362,8 @@ public class SquareGame extends AppCompatActivity {
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) piece.image.getLayoutParams();
                     this.attachedOffsetX = eventX - params.leftMargin;
                     this.attachedOffsetY = eventY - (params.topMargin + this.getStatusBarHeight());
-                    Log.i(TAG, "attachedOffsetX = " + this.attachedOffsetX); ////////////////////////////////////////////////////////////////
-                    Log.i(TAG, "attachedOffsetY = " + this.attachedOffsetY); ////////////////////////////////////////////////////////////////
+//                    Log.i(TAG, "attachedOffsetX = " + this.attachedOffsetX);
+//                    Log.i(TAG, "attachedOffsetY = " + this.attachedOffsetY);
 
                     it.remove();
                     this.pieceList.addFirst(piece);
@@ -424,7 +431,7 @@ public class SquareGame extends AppCompatActivity {
                 this.changePosition(this.pieceList.getFirst().image, eventX, eventY);
             }
 
-            Log.i(TAG, "Movement at: " + Float.toString(eventX) + ", " + Float.toString(eventY));
+//            Log.i(TAG, "Movement at: " + Float.toString(eventX) + ", " + Float.toString(eventY));
         }
 
         return true;
