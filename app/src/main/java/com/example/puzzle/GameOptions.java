@@ -10,6 +10,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameOptions extends AppCompatActivity {
     public static String COMMON_TAG = "puzzletag";
     public static String TAG = MainActivity.COMMON_TAG;
@@ -17,6 +20,41 @@ public class GameOptions extends AppCompatActivity {
     private EditText columnInput;
     private Integer imageSelected = null;
     private Integer imageSelectedPrior = null;
+
+    private List<Integer> imageViewArray = new ArrayList<>();
+    private List<Integer> imageResourceArray = new ArrayList<>();
+
+    {
+        imageViewArray.add(R.id.imageView1);
+        imageResourceArray.add(R.drawable.p1);
+
+        imageViewArray.add(R.id.imageView2);
+        imageResourceArray.add(R.drawable.p2);
+
+        imageViewArray.add(R.id.imageView3);
+        imageResourceArray.add(R.drawable.p3);
+
+        imageViewArray.add(R.id.imageView4);
+        imageResourceArray.add(R.drawable.p4);
+
+        imageViewArray.add(R.id.imageView5);
+        imageResourceArray.add(R.drawable.p5);
+
+        imageViewArray.add(R.id.imageView6);
+        imageResourceArray.add(R.drawable.p6);
+
+        imageViewArray.add(R.id.imageView7);
+        imageResourceArray.add(R.drawable.p7);
+
+        imageViewArray.add(R.id.imageView8);
+        imageResourceArray.add(R.drawable.p8);
+
+        imageViewArray.add(R.id.imageView9);
+        imageResourceArray.add(R.drawable.p9);
+
+        imageViewArray.add(R.id.imageView10);
+        imageResourceArray.add(R.drawable.p10);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,9 +119,23 @@ public class GameOptions extends AppCompatActivity {
         Log.i(GameOptions.TAG, this.imageSelected.toString());
         Log.i(GameOptions.TAG, rowNumber.toString());
         Log.i(GameOptions.TAG, columnNumber.toString());
+
+        Integer intentImage = null;
+        for (int i = 0; i < this.imageViewArray.size(); ++i) {
+            if (this.imageSelected.equals(this.imageViewArray.get(i))) {
+                intentImage = this.imageResourceArray.get(i);
+                break;
+            }
+        }
+
+        if (intentImage == null) {
+            Log.e(GameOptions.TAG, "imageSelected was not found, reverting to default; id: " + Integer.toString(this.imageSelected));
+            intentImage = R.drawable.p1;
+        }
+
         intent.putExtra("rowNumber", rowNumber);
         intent.putExtra("columnNumber", columnNumber);
-        intent.putExtra("imageSelected", this.imageSelected);
+        intent.putExtra("imageSelected", intentImage);
         startActivity(intent);
 
         //in SquareGame Activity: String value = getIntent().getExtras().getString(key);
@@ -103,8 +155,8 @@ public class GameOptions extends AppCompatActivity {
             image.setBackground(drawable);
         }
 
-        if(imageSelected != null){
-            ImageView currentSelectedImage = findViewById(imageSelectedPrior);
+        if(this.imageSelectedPrior != null){
+            ImageView currentSelectedImage = findViewById(this.imageSelectedPrior);
             removeSelectedImageTheme(currentSelectedImage);
         }
     }
@@ -114,18 +166,13 @@ public class GameOptions extends AppCompatActivity {
     }
 
     public void selectImage(View view) {
-        if(view.getId()==R.id.imageView1){
-            applySelectedImageTheme(view);
+        if (this.imageSelected != null && this.imageSelected.equals(view.getId())) {
+            return;
+        }
 
-            imageSelected = R.drawable.p1;
-            imageSelectedPrior = R.id.imageView1;
-            return;
-        }
-        if(view.getId()==R.id.imageView2){
-            applySelectedImageTheme(view);
-            imageSelected = R.drawable.p2;
-            imageSelectedPrior = R.id.imageView2;
-            return;
-        }
+        this.imageSelectedPrior = this.imageSelected;
+        this.imageSelected = view.getId();
+
+        this.applySelectedImageTheme(view);
     }
 }

@@ -91,14 +91,52 @@
                 <ImageView
                     android:id="@+id/imageView1"
                     style="@style/ImageSelectView"
-                    app:srcCompat="@drawable/p1small"
-
-                    />
+                    app:srcCompat="@drawable/p1small" />
 
                 <ImageView
                     android:id="@+id/imageView2"
                     style="@style/ImageSelectView"
                     app:srcCompat="@drawable/p2small" />
+
+                <ImageView
+                    android:id="@+id/imageView3"
+                    style="@style/ImageSelectView"
+                    app:srcCompat="@drawable/p3small" />
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    style="@style/ImageSelectView"
+                    app:srcCompat="@drawable/p4small" />
+
+                <ImageView
+                    android:id="@+id/imageView5"
+                    style="@style/ImageSelectView"
+                    app:srcCompat="@drawable/p5small" />
+
+                <ImageView
+                    android:id="@+id/imageView6"
+                    style="@style/ImageSelectView"
+                    app:srcCompat="@drawable/p6small" />
+
+                <ImageView
+                    android:id="@+id/imageView7"
+                    style="@style/ImageSelectView"
+                    app:srcCompat="@drawable/p7small" />
+
+                <ImageView
+                    android:id="@+id/imageView8"
+                    style="@style/ImageSelectView"
+                    app:srcCompat="@drawable/p8small" />
+
+                <ImageView
+                    android:id="@+id/imageView9"
+                    style="@style/ImageSelectView"
+                    app:srcCompat="@drawable/p9small" />
+
+                <ImageView
+                    android:id="@+id/imageView10"
+                    style="@style/ImageSelectView"
+                    app:srcCompat="@drawable/p10small" />
 
             </LinearLayout>
         </ScrollView>
