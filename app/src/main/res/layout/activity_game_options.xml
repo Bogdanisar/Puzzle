@@ -64,6 +64,46 @@
                 android:inputType="numberSigned" />
         </LinearLayout>
 
+
+        <TextView
+            android:id="@+id/gamemodeInputTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select Gamemode:"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:background="#40000000"
+            android:paddingLeft="10sp"
+            android:paddingRight="10sp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/gamemodeSquareGameView"
+                    android:text="Square Game"
+                    style="@style/gamemodeSelectView"/>
+
+                <TextView
+                    android:id="@+id/gamemodeSquareGameShellView"
+                    android:text="Square Game - Shell"
+                    style="@style/gamemodeSelectView" />
+
+                <TextView
+                    android:id="@+id/gamemodeSquareGameOnePieceView"
+                    android:text="Square Game - One Piece"
+                    style="@style/gamemodeSelectView"/>
+
+
+            </LinearLayout>
+        </ScrollView>
+
         <TextView
             android:id="@+id/imageSelectTitle"
             android:layout_width="match_parent"
@@ -75,7 +115,7 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="317dp"
+            android:layout_height="0px"
             android:layout_weight="1"
             android:background="#40000000"
             android:paddingLeft="10sp"

@@ -1,7 +1,9 @@
 package com.example.puzzle;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +22,8 @@ public class GameOptions extends AppCompatActivity {
     private EditText columnInput;
     private Integer imageSelected = null;
     private Integer imageSelectedPrior = null;
+    private Integer gamemodeSelected = null;
+    private Integer gamemodeSelectedPrior = null;
 
     private List<Integer> imageViewArray = new ArrayList<>();
     private List<Integer> imageResourceArray = new ArrayList<>();
@@ -115,7 +119,6 @@ public class GameOptions extends AppCompatActivity {
             return;
         }
 
-        Intent intent = new Intent(this, SquareGame.class);
         Log.i(GameOptions.TAG, this.imageSelected.toString());
         Log.i(GameOptions.TAG, rowNumber.toString());
         Log.i(GameOptions.TAG, columnNumber.toString());
@@ -133,36 +136,63 @@ public class GameOptions extends AppCompatActivity {
             intentImage = R.drawable.p1;
         }
 
-        intent.putExtra("rowNumber", rowNumber);
-        intent.putExtra("columnNumber", columnNumber);
-        intent.putExtra("imageSelected", intentImage);
-        startActivity(intent);
+        if (gamemodeSelected.equals(R.id.gamemodeSquareGameView)) {
+            Intent intent = new Intent(this, SquareGame.class);
+            intent.putExtra("rowNumber", rowNumber);
+            intent.putExtra("columnNumber", columnNumber);
+            intent.putExtra("imageSelected", intentImage);
+            intent.putExtra("type", "simple");
+            startActivity(intent);
+        }
+        else if (gamemodeSelected.equals(R.id.gamemodeSquareGameShellView)) {
+            Intent intent = new Intent(this, SquareGame.class);
+            intent.putExtra("rowNumber", rowNumber);
+            intent.putExtra("columnNumber", columnNumber);
+            intent.putExtra("imageSelected", intentImage);
+            intent.putExtra("type", "shell");
+            startActivity(intent);
+        }
+        else if (gamemodeSelected.equals(R.id.gamemodeSquareGameOnePieceView)) {
+            Intent intent = new Intent(this, SquareGame.class);
+            intent.putExtra("rowNumber", rowNumber);
+            intent.putExtra("columnNumber", columnNumber);
+            intent.putExtra("imageSelected", intentImage);
+            intent.putExtra("type", "onePiece");
+            startActivity(intent);
+        }
 
         //in SquareGame Activity: String value = getIntent().getExtras().getString(key);
     }
 
-    private void applySelectedImageTheme (View view){
-        ImageView image = (ImageView)view;
 
-        String name = "@color/colorAccent";
-        int id = getResources().getIdentifier(name, "drawable", getPackageName());
-        Drawable drawable = getResources().getDrawable(id);
+    // methods for selecting, deselecting
+    private void applyBackgroundFromId(View view, int id) {
+        Drawable drawable = ContextCompat.getDrawable(this, id);
+        this.applyBackground(view, drawable);
+    }
 
+    private void applyBackgroundFromColor(View view, int color) {
+        Drawable drawable = new ColorDrawable(color);
+        this.applyBackground(view, drawable);
+    }
+
+    private void applyBackground(View view, Drawable drawable) {
         int sdk = android.os.Build.VERSION.SDK_INT;
         if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            image.setBackgroundDrawable(drawable);
-        } else {
-            image.setBackground(drawable);
+            view.setBackgroundDrawable(drawable);
+        }
+        else {
+            view.setBackground(drawable);
         }
     }
 
-    private void removeSelectedImageTheme (Integer id) {
+    private void removeBackground(Integer id) {
         if (id == null) {
             return;
         }
 
-        ImageView imageView = findViewById(id);
-        imageView.setBackgroundColor(0x00000000);
+        View view = findViewById(id);
+        view.setBackgroundColor(0x00000000);
     }
 
     public void selectImage(View view) {
@@ -173,7 +203,19 @@ public class GameOptions extends AppCompatActivity {
         this.imageSelectedPrior = this.imageSelected;
         this.imageSelected = view.getId();
 
-        this.applySelectedImageTheme(view);
-        this.removeSelectedImageTheme(this.imageSelectedPrior);
+        this.applyBackgroundFromId(view, R.color.colorAccent);
+        this.removeBackground(this.imageSelectedPrior);
+    }
+
+    public void selectGamemode(View view) {
+        if (this.gamemodeSelected != null && this.gamemodeSelected.equals(view.getId())) {
+            return;
+        }
+
+        this.gamemodeSelectedPrior = this.gamemodeSelected;
+        this.gamemodeSelected = view.getId();
+
+        this.applyBackgroundFromId(view, R.color.colorAccentText);
+        this.removeBackground(this.gamemodeSelectedPrior);
     }
 }
