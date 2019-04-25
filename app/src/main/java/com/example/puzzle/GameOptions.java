@@ -154,14 +154,14 @@ public class GameOptions extends AppCompatActivity {
         } else {
             image.setBackground(drawable);
         }
-
-        if(this.imageSelectedPrior != null){
-            ImageView currentSelectedImage = findViewById(this.imageSelectedPrior);
-            removeSelectedImageTheme(currentSelectedImage);
-        }
     }
 
-    private void removeSelectedImageTheme (ImageView imageView){
+    private void removeSelectedImageTheme (Integer id) {
+        if (id == null) {
+            return;
+        }
+
+        ImageView imageView = findViewById(id);
         imageView.setBackgroundColor(0x00000000);
     }
 
@@ -174,5 +174,6 @@ public class GameOptions extends AppCompatActivity {
         this.imageSelected = view.getId();
 
         this.applySelectedImageTheme(view);
+        this.removeSelectedImageTheme(this.imageSelectedPrior);
     }
 }
