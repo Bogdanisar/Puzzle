@@ -22,4 +22,11 @@
         <item name="android:onClick">selectImage</item>
     </style>
 
+    <style name="SquareGameMenuButton">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">match_parent</item>>
+        <item name="android:layout_margin">20px</item>
+        <item name="android:background">@color/squareGameButtonColor</item>
+    </style>
+
 </resources>

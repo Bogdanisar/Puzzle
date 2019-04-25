@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Puzzle</string>
+
+
+    <string name="SquareGameMenuStartText">Game started</string>
+    <string name="wonText">You Won!</string>
 </resources>

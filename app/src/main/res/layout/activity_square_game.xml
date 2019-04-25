@@ -1,10 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/squareGameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".SquareGame">
 
-</RelativeLayout>
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/squareGameMenuSize"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal"
+        android:weightSum="1.0">
+
+        <RelativeLayout
+            android:layout_weight="0.25"
+            android:layout_width="0px"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/backButton"
+                android:text="Back"
+                style="@style/SquareGameMenuButton">
+            </Button>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_weight="0.5"
+            android:layout_width="0px"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/menuGameText"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="45px"
+                android:text="@string/SquareGameMenuStartText">
+            </TextView>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_weight="0.25"
+            android:layout_width="0px"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/statusButton"
+                android:text="Status"
+                style="@style/SquareGameMenuButton">
+            </Button>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.LinearLayoutCompat>
+
+    <RelativeLayout
+        android:id="@+id/squareGamePuzzleLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimaryDark">
+
+    </RelativeLayout>
+
+
+</android.support.v7.widget.LinearLayoutCompat>

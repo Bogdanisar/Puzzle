@@ -6,11 +6,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -45,8 +47,8 @@ class Piece {
 
         this.image = new ImageView(context);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(SquareGame.pieceWidth, SquareGame.pieceHeight);
-        params.leftMargin = getRandomPosition(context.getTotalScreenWidth(), SquareGame.pieceWidth);
-        params.topMargin = getRandomPosition(context.getTotalScreenHeight() - context.getStatusBarHeight(), SquareGame.pieceHeight);
+        params.leftMargin = getRandomPosition(context.getContainerWidth(), SquareGame.pieceWidth);
+        params.topMargin = getRandomPosition(context.getContainerHeight(), SquareGame.pieceHeight);
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         this.image.setLayoutParams(params);
@@ -218,17 +220,10 @@ public class SquareGame extends AppCompatActivity {
     int attachedOffsetX = 0, attachedOffsetY = 0;
 
     Piece[][] pieceMatrix;
+    int numPlacedPieces = 0;
 
     RelativeLayout topLayout = null;
     LinkedList<Piece> pieceList = null;
-
-    public static int getTotalScreenWidth() {
-        return Resources.getSystem().getDisplayMetrics().widthPixels;
-    }
-
-    public static int getTotalScreenHeight() {
-        return Resources.getSystem().getDisplayMetrics().heightPixels;
-    }
 
     public int getStatusBarHeight() {
         int statusBarHeight = 0;
@@ -240,6 +235,28 @@ public class SquareGame extends AppCompatActivity {
         return statusBarHeight;
     }
 
+    public int getTopBarDimension() {
+        int menuId = R.dimen.squareGameMenuSize;
+        int menuSize = (int)this.getResources().getDimension(menuId);
+        return getStatusBarHeight() + menuSize;
+    }
+
+    public static int getTotalScreenWidth() {
+        return Resources.getSystem().getDisplayMetrics().widthPixels;
+    }
+
+    public static int getTotalScreenHeight() {
+        return Resources.getSystem().getDisplayMetrics().heightPixels;
+    }
+
+    public int getContainerWidth() {
+        return SquareGame.getTotalScreenWidth();
+    }
+
+    public int getContainerHeight() {
+        return SquareGame.getTotalScreenHeight() - this.getTopBarDimension();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -248,11 +265,11 @@ public class SquareGame extends AppCompatActivity {
         this.setParametersForGame();
 
         SquareGame.TAG += this.getClass().getSimpleName();
-        this.topLayout = findViewById(R.id.squareGameLayout);
+        this.topLayout = findViewById(R.id.squareGamePuzzleLayout);
 
         Log.i(TAG, "statusBarHeight: " + this.getStatusBarHeight());
-        SquareGame.pieceWidth = SquareGame.getTotalScreenWidth() / numHorizontal;
-        SquareGame.pieceHeight = (SquareGame.getTotalScreenHeight() - this.getStatusBarHeight()) / numVertical;
+        SquareGame.pieceWidth = this.getContainerWidth() / numHorizontal;
+        SquareGame.pieceHeight = this.getContainerHeight() / numVertical;
         this.setLimits();
         Log.i(TAG, "statusBarHeight: " + this.getStatusBarHeight());
         Log.i(TAG, "minY: " + this.minY);
@@ -286,8 +303,9 @@ public class SquareGame extends AppCompatActivity {
     public void setLimits() {
         this.minX = 0;
         this.minY = 0;
-        this.maxX = SquareGame.getTotalScreenWidth() - SquareGame.pieceWidth;
-        this.maxY = (SquareGame.getTotalScreenHeight() - this.getStatusBarHeight()) - SquareGame.pieceHeight;
+
+        this.maxX = this.getContainerWidth() - SquareGame.pieceWidth;
+        this.maxY = this.getContainerHeight() - SquareGame.pieceHeight;
     }
 
     public Bitmap getScaledImage() {
@@ -311,11 +329,6 @@ public class SquareGame extends AppCompatActivity {
         return scaledImage;
     }
 
-
-
-
-
-
     public void changePosition(View v, float x, float y) {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) v.getLayoutParams();
 
@@ -323,8 +336,7 @@ public class SquareGame extends AppCompatActivity {
         newX = Math.max(newX, this.minX);
         newX = Math.min(newX, this.maxX);
 
-        int newY = (int)y - this.attachedOffsetY - this.getStatusBarHeight();
-//        Log.i(TAG, "newY = " + newY); ////////////////////////////////////////////////////////////////////////////////////
+        int newY = (int)y - this.attachedOffsetY;
         newY = Math.max(newY, this.minY);
         newY = Math.min(newY, this.maxY);
 
@@ -345,8 +357,31 @@ public class SquareGame extends AppCompatActivity {
         return true;
     }
 
+    private void updateText() {
+        TextView textView = findViewById(R.id.menuGameText);
+        String text;
+
+        ++this.numPlacedPieces;
+        if (this.numPlacedPieces == SquareGame.numHorizontal * SquareGame.numVertical) {
+            text = this.getResources().getString(R.string.wonText);
+        }
+        else {
+            text = this.numPlacedPieces + " / " + SquareGame.numHorizontal * SquareGame.numVertical;
+        }
+
+        textView.setText(text);
+        textView.requestLayout();
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        int eventX = (int)event.getX();
+        int eventY = (int)event.getY() - this.getTopBarDimension();
+
+        if (eventY < 0) {
+            return true;
+        }
+
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
 //            String str = "The screen has been touched at: " + event.getX() + ", " + event.getY();
 //            Log.i("myTag", str);
@@ -355,13 +390,11 @@ public class SquareGame extends AppCompatActivity {
             ListIterator<Piece> it = this.pieceList.listIterator();
             while (it.hasNext()) {
                 Piece piece = it.next();
-                int eventX = (int)event.getX();
-                int eventY = (int)event.getY();
 
                 if (this.pointIsInsideView(piece.image, eventX, eventY)) {
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) piece.image.getLayoutParams();
                     this.attachedOffsetX = eventX - params.leftMargin;
-                    this.attachedOffsetY = eventY - (params.topMargin + this.getStatusBarHeight());
+                    this.attachedOffsetY = eventY - params.topMargin;
 //                    Log.i(TAG, "attachedOffsetX = " + this.attachedOffsetX);
 //                    Log.i(TAG, "attachedOffsetY = " + this.attachedOffsetY);
 
@@ -385,14 +418,12 @@ public class SquareGame extends AppCompatActivity {
             }
 
             Piece piece = this.pieceList.getFirst();
-            int eventX = (int)event.getX();
-            int eventY = (int)event.getY();
 
-            int cornerX = (int)eventX - this.attachedOffsetX;
+            int cornerX = eventX - this.attachedOffsetX;
             cornerX = Math.max(cornerX, this.minX);
             cornerX = Math.min(cornerX, this.maxX);
 
-            int cornerY = (int)eventY - this.attachedOffsetY - this.getStatusBarHeight();
+            int cornerY = eventY - this.attachedOffsetY;
             cornerY = Math.max(cornerY, this.minY);
             cornerY = Math.min(cornerY, this.maxY);
 
@@ -403,6 +434,7 @@ public class SquareGame extends AppCompatActivity {
             int targetY = piece.targeti * SquareGame.pieceHeight;
 
             if (Math.abs(targetX - cornerX) <= errorX && Math.abs(targetY - cornerY) <= errorY) {
+                this.updateText();
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) piece.image.getLayoutParams();
                 params.leftMargin = targetX;
                 params.topMargin = targetY;
@@ -425,8 +457,6 @@ public class SquareGame extends AppCompatActivity {
             this.hasAttached = false;
         }
         else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-            float eventX = event.getX();
-            float eventY = event.getY();
             if (this.hasAttached) {
                 this.changePosition(this.pieceList.getFirst().image, eventX, eventY);
             }
