@@ -9,19 +9,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name=".GameOptions"
-            android:label = "GameOptions"
+        <activity android:name=".History"></activity>
+        <activity
+            android:name=".GameOptions"
+            android:label="GameOptions"
             android:parentActivityName=".MainActivity"
             android:windowSoftInputMode="stateHidden">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.puzzle.MainActivity"/>
+                android:value="com.example.puzzle.MainActivity" />
         </activity>
-
         <activity android:name=".SquareGame" />
-
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,7 +27,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

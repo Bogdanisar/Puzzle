@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="@drawable/background_color_main">
+    android:background="@drawable/background_color_main"
+    tools:context=".MainActivity">
 
 
     <TextView
@@ -53,6 +53,24 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
+        android:id="@+id/buttonHistory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@color/colorPrimary"
+        android:text="history"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/buttonSettings"
+        app:layout_constraintStart_toEndOf="@+id/buttonAbout"
+        app:layout_constraintTop_toTopOf="parent"
+        android:onClick="openHistory"/>
+
+    <Button
         android:id="@+id/buttonStart"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="0dp"
@@ -63,6 +81,7 @@
         android:layout_marginRight="32dp"
         android:layout_marginBottom="16dp"
         android:background="@color/colorPrimaryDark"
+        android:onClick="startGame"
         android:paddingLeft="10sp"
         android:paddingRight="10sp"
         android:text="start"
@@ -71,7 +90,13 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:onClick="startGame"/>
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="20dp" />
 
 </android.support.constraint.ConstraintLayout>
