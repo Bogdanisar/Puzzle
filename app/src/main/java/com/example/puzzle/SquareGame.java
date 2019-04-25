@@ -215,6 +215,10 @@ public class SquareGame extends AppCompatActivity {
     static int pieceWidth = 0;
     static int pieceHeight = 0;
 
+    static boolean gamemodeSimple = false;
+    static boolean gamemodeShell = false;
+    static boolean gamemodeOnePiece = false;
+
     int minX, minY, maxX, maxY;
     boolean hasAttached = false;
     int attachedOffsetX = 0, attachedOffsetY = 0;
@@ -297,6 +301,15 @@ public class SquareGame extends AppCompatActivity {
         SquareGame.imageId = (Integer)this.getIntent().getExtras().get("imageSelected");
         SquareGame.numVertical = (Integer)this.getIntent().getExtras().get("columnNumber");
         SquareGame.numHorizontal = (Integer)this.getIntent().getExtras().get("rowNumber");
+
+        Object typeObject = this.getIntent().getExtras().get("type");
+        if (typeObject != null && ((String)typeObject).equals("shell")) {
+            this.gamemodeShell = true;
+        }
+        else {
+            this.gamemodeSimple = true;
+        }
+
         this.pieceMatrix = new Piece[SquareGame.numVertical][SquareGame.numHorizontal];
     }
 
@@ -357,6 +370,36 @@ public class SquareGame extends AppCompatActivity {
         return true;
     }
 
+    private boolean pieceCanBePlaced(Piece piece) {
+        if (this.gamemodeSimple) {
+            return true;
+        }
+        if (this.gamemodeShell) {
+            int i = piece.targeti, j = piece.targetj;
+            if (i == 0 || i == SquareGame.numVertical - 1) {
+                return true;
+            }
+            if (j == 0 || j == SquareGame.numHorizontal - 1) {
+                return true;
+            }
+
+            int[] di = new int[] {-1, 0, +1, 0};
+            int[] dj = new int[] {0, +1, 0, -1};
+            for (int k = 0; k < 4; ++k) {
+                int ni = i + di[k];
+                int nj = j + dj[k];
+
+                if (this.pieceMatrix[ni][nj] != null) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
     private void updateText() {
         TextView textView = findViewById(R.id.menuGameText);
         String text;
@@ -364,8 +407,7 @@ public class SquareGame extends AppCompatActivity {
         ++this.numPlacedPieces;
         if (this.numPlacedPieces == SquareGame.numHorizontal * SquareGame.numVertical) {
             text = this.getResources().getString(R.string.wonText);
-        }
-        else {
+        } else {
             text = this.numPlacedPieces + " / " + SquareGame.numHorizontal * SquareGame.numVertical;
         }
 
@@ -433,7 +475,8 @@ public class SquareGame extends AppCompatActivity {
             int targetX = piece.targetj * SquareGame.pieceWidth;
             int targetY = piece.targeti * SquareGame.pieceHeight;
 
-            if (Math.abs(targetX - cornerX) <= errorX && Math.abs(targetY - cornerY) <= errorY) {
+            Log.i(TAG, "pieceCanBePlace: " + this.pieceCanBePlaced(piece)); /////////////////////////////////////////////
+            if ( (this.pieceCanBePlaced(piece)) && (Math.abs(targetX - cornerX) <= errorX && Math.abs(targetY - cornerY) <= errorY) ) {
                 this.updateText();
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) piece.image.getLayoutParams();
                 params.leftMargin = targetX;

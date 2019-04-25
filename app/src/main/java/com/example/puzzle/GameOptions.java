@@ -108,7 +108,12 @@ public class GameOptions extends AppCompatActivity {
             message = "Column Number Too Big!";
         }
 
-        if(!incorrectFlag && imageSelected==null){
+        if (!incorrectFlag && this.gamemodeSelected == null) {
+            incorrectFlag = true;
+            message = "No Gamemode Selected!";
+        }
+
+        if(!incorrectFlag && this.imageSelected == null){
             incorrectFlag = true;
             message = "No Image Selected!";
         }
