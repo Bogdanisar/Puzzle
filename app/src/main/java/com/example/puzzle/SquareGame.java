@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -266,7 +265,7 @@ public class SquareGame extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_square_game);
 
-        this.setParametersForGame();
+        this.setGameParameters();
 
         SquareGame.TAG += this.getClass().getSimpleName();
         this.topLayout = findViewById(R.id.squareGamePuzzleLayout);
@@ -297,12 +296,13 @@ public class SquareGame extends AppCompatActivity {
         topLayout.requestLayout();
     }
 
-    private void setParametersForGame() {
-        SquareGame.imageId = (Integer)this.getIntent().getExtras().get("imageSelected");
-        SquareGame.numVertical = (Integer)this.getIntent().getExtras().get("columnNumber");
-        SquareGame.numHorizontal = (Integer)this.getIntent().getExtras().get("rowNumber");
+    private void setGameParameters() {
+        Bundle bundle = this.getIntent().getExtras();
+        SquareGame.imageId = (Integer)bundle.get("imageSelected");
+        SquareGame.numVertical = (Integer)bundle.get("columnNumber");
+        SquareGame.numHorizontal = (Integer)bundle.get("rowNumber");
 
-        Object typeObject = this.getIntent().getExtras().get("type");
+        Object typeObject = bundle.get("type");
         if (typeObject != null && ((String)typeObject).equals("shell")) {
             this.gamemodeShell = true;
         }
