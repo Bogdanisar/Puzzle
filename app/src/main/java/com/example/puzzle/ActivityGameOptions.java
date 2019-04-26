@@ -26,37 +26,48 @@ public class ActivityGameOptions extends AppCompatActivity {
 
     private List<Integer> imageViewArray = new ArrayList<>();
     private List<Integer> imageResourceArray = new ArrayList<>();
+    private List<Integer> smallImageResourceArray = new ArrayList<>();
 
     {
         imageViewArray.add(R.id.imageView1);
         imageResourceArray.add(R.drawable.p1);
+        smallImageResourceArray.add(R.drawable.p1small);
 
         imageViewArray.add(R.id.imageView2);
         imageResourceArray.add(R.drawable.p2);
+        smallImageResourceArray.add(R.drawable.p2small);
 
         imageViewArray.add(R.id.imageView3);
         imageResourceArray.add(R.drawable.p3);
+        smallImageResourceArray.add(R.drawable.p3small);
 
         imageViewArray.add(R.id.imageView4);
         imageResourceArray.add(R.drawable.p4);
+        smallImageResourceArray.add(R.drawable.p4small);
 
         imageViewArray.add(R.id.imageView5);
         imageResourceArray.add(R.drawable.p5);
+        smallImageResourceArray.add(R.drawable.p5small);
 
         imageViewArray.add(R.id.imageView6);
         imageResourceArray.add(R.drawable.p6);
+        smallImageResourceArray.add(R.drawable.p6small);
 
         imageViewArray.add(R.id.imageView7);
         imageResourceArray.add(R.drawable.p7);
+        smallImageResourceArray.add(R.drawable.p7small);
 
         imageViewArray.add(R.id.imageView8);
         imageResourceArray.add(R.drawable.p8);
+        smallImageResourceArray.add(R.drawable.p8small);
 
         imageViewArray.add(R.id.imageView9);
         imageResourceArray.add(R.drawable.p9);
+        smallImageResourceArray.add(R.drawable.p9small);
 
         imageViewArray.add(R.id.imageView10);
         imageResourceArray.add(R.drawable.p10);
+        smallImageResourceArray.add(R.drawable.p10small);
     }
 
     @Override
@@ -127,24 +138,29 @@ public class ActivityGameOptions extends AppCompatActivity {
         Log.i(ActivityGameOptions.TAG, rowNumber.toString());
         Log.i(ActivityGameOptions.TAG, columnNumber.toString());
 
-        Integer intentImage = null;
+        Integer intentImageId = null;
+        Integer smallIntentImageId = null;
         for (int i = 0; i < this.imageViewArray.size(); ++i) {
             if (this.imageSelected.equals(this.imageViewArray.get(i))) {
-                intentImage = this.imageResourceArray.get(i);
+                intentImageId = this.imageResourceArray.get(i);
+                smallIntentImageId = this.smallImageResourceArray.get(i);
                 break;
             }
         }
 
-        if (intentImage == null) {
-            Log.e(ActivityGameOptions.TAG, "imageSelected was not found, reverting to default; id: " + Integer.toString(this.imageSelected));
-            intentImage = R.drawable.p1;
+        if (intentImageId == null) {
+            throw new IllegalArgumentException("imageSelected was not found; selected view id: " + Integer.toString(this.imageSelected));
+//            Log.e(ActivityGameOptions.TAG, "imageSelected was not found, reverting to default; id: " + Integer.toString(this.imageSelected));
+//            intentImageId = R.drawable.p1;
+//            smallintentImageId = R.drawable.p1;
         }
 
         if (gamemodeSelected.equals(R.id.gamemodeSquareGameView)) {
             Intent intent = new Intent(this, ActivitySquareGame.class);
             intent.putExtra("rowNumber", rowNumber);
             intent.putExtra("columnNumber", columnNumber);
-            intent.putExtra("imageSelected", intentImage);
+            intent.putExtra("imageSelected", intentImageId);
+            intent.putExtra("smallImageSelected", smallIntentImageId);
             intent.putExtra("type", "simple");
             startActivity(intent);
         }
@@ -152,7 +168,8 @@ public class ActivityGameOptions extends AppCompatActivity {
             Intent intent = new Intent(this, ActivitySquareGame.class);
             intent.putExtra("rowNumber", rowNumber);
             intent.putExtra("columnNumber", columnNumber);
-            intent.putExtra("imageSelected", intentImage);
+            intent.putExtra("imageSelected", intentImageId);
+            intent.putExtra("smallImageSelected", smallIntentImageId);
             intent.putExtra("type", "shell");
             startActivity(intent);
         }
@@ -160,7 +177,8 @@ public class ActivityGameOptions extends AppCompatActivity {
             Intent intent = new Intent(this, ActivitySquareGame.class);
             intent.putExtra("rowNumber", rowNumber);
             intent.putExtra("columnNumber", columnNumber);
-            intent.putExtra("imageSelected", intentImage);
+            intent.putExtra("imageSelected", intentImageId);
+            intent.putExtra("smallImageSelected", smallIntentImageId);
             intent.putExtra("type", "onePiece");
             startActivity(intent);
         }

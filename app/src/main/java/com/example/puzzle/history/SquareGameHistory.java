@@ -1,6 +1,16 @@
 package com.example.puzzle.history;
 
+import android.app.Activity;
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.example.puzzle.R;
 
 import java.util.ArrayList;
 
@@ -163,7 +173,27 @@ public class SquareGameHistory extends HistoryItem {
     }
 
     @Override
-    public View getViewForHistory() {
-        return null;
+    public View getViewForHistory(Activity activity) {
+        int sdk = android.os.Build.VERSION.SDK_INT;
+
+        LayoutInflater inflater = activity.getLayoutInflater();
+        View top = inflater.inflate(R.layout.history_item, null, false);
+
+        ImageView image = top.findViewById(R.id.historyItemImageView);
+        image.setImageResource(this.imageId);
+
+        TextView gamemodeView = top.findViewById(R.id.historyItemGamemode);
+        gamemodeView.setText(this.gamemode);
+
+        TextView datePlayedView = top.findViewById(R.id.historyItemDate);
+        datePlayedView.setText(Long.toString(this.startTimeInSeconds)); ////////////////
+
+        TextView gameTimeView = top.findViewById(R.id.historyItemTimePlayed);
+        gameTimeView.setText(Long.toString(this.durationInMilliseconds));
+
+        TextView dimensionsView = top.findViewById(R.id.historyItemDimensions);
+        dimensionsView.setText(this.numHorizontal + "x" + this.numVertical);
+
+        return top;
     }
 }

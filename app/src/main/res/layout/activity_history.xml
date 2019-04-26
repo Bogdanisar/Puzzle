@@ -51,277 +51,99 @@
             android:paddingBottom="16sp">
 
             <LinearLayout
+                android:id="@+id/historyItemLinearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="30px"
-                    android:background="#80D32F2F"
-                    android:orientation="vertical">
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginBottom="30px"-->
+                    <!--android:background="#80D32F2F"-->
+                    <!--android:orientation="vertical">-->
 
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="195dp"
-                        android:padding="5sp"
-                        android:paddingTop="5sp"
-                        app:srcCompat="@drawable/p6small" />
+                    <!--<ImageView-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="195dp"-->
+                        <!--android:padding="5sp"-->
+                        <!--android:paddingTop="5sp"-->
+                        <!--app:srcCompat="@drawable/p6small" />-->
 
-                    <TableLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:paddingLeft="5sp"
-                        android:paddingTop="5sp"
-                        android:paddingRight="5sp"
-                        android:paddingBottom="5sp">
+                    <!--<TableLayout-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:orientation="horizontal"-->
+                        <!--android:paddingLeft="5sp"-->
+                        <!--android:paddingTop="5sp"-->
+                        <!--android:paddingRight="5sp"-->
+                        <!--android:paddingBottom="5sp">-->
 
-                        <TableRow
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                        <!--<TableRow-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="match_parent">-->
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Game Type"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
+                            <!--<TextView-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:text="Game Type"-->
+                                <!--android:textSize="16sp"-->
+                                <!--android:textStyle="bold" />-->
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="center_horizontal"
-                                android:text="SquareGame"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-                        </TableRow>
+                            <!--<TextView-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:layout_weight="1"-->
+                                <!--android:gravity="center_horizontal"-->
+                                <!--android:text="SquareGame"-->
+                                <!--android:textSize="16sp"-->
+                                <!--android:textStyle="bold" />-->
+                        <!--</TableRow>-->
 
-                        <TableRow
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                        <!--<TableRow-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="match_parent">-->
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Date Played"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
+                            <!--<TextView-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:text="Date Played"-->
+                                <!--android:textSize="16sp"-->
+                                <!--android:textStyle="bold" />-->
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="center_horizontal"
-                                android:text="25-4-2019"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-                        </TableRow>
+                            <!--<TextView-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:layout_weight="1"-->
+                                <!--android:gravity="center_horizontal"-->
+                                <!--android:text="25-4-2019"-->
+                                <!--android:textSize="16sp"-->
+                                <!--android:textStyle="bold" />-->
+                        <!--</TableRow>-->
 
-                        <TableRow
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                        <!--<TableRow-->
+                            <!--android:layout_width="match_parent"-->
+                            <!--android:layout_height="match_parent">-->
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Game Time"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
+                            <!--<TextView-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:text="Game Time"-->
+                                <!--android:textSize="16sp"-->
+                                <!--android:textStyle="bold" />-->
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="center_horizontal"
-                                android:text="05:37"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-                        </TableRow>
-                    </TableLayout>
+                            <!--<TextView-->
+                                <!--android:layout_width="wrap_content"-->
+                                <!--android:layout_height="wrap_content"-->
+                                <!--android:layout_weight="1"-->
+                                <!--android:gravity="center_horizontal"-->
+                                <!--android:text="05:37"-->
+                                <!--android:textSize="16sp"-->
+                                <!--android:textStyle="bold" />-->
+                        <!--</TableRow>-->
+                    <!--</TableLayout>-->
 
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="30px"
-                    android:background="#80D32F2F"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="195dp"
-                        android:padding="5sp"
-                        android:paddingTop="5sp"
-                        app:srcCompat="@drawable/p6small" />
-
-                    <TableLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:paddingLeft="5sp"
-                        android:paddingTop="5sp"
-                        android:paddingRight="5sp"
-                        android:paddingBottom="5sp">
-
-                        <TableRow
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Game Type"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="center_horizontal"
-                                android:text="SquareGame"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-                        </TableRow>
-
-                        <TableRow
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Date Played"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="center_horizontal"
-                                android:text="25-4-2019"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-                        </TableRow>
-
-                        <TableRow
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Game Time"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="center_horizontal"
-                                android:text="05:37"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-                        </TableRow>
-                    </TableLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#80D32F2F"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="195dp"
-                        android:padding="5sp"
-                        android:paddingTop="5sp"
-                        app:srcCompat="@drawable/p6small" />
-
-                    <TableLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:paddingLeft="5sp"
-                        android:paddingTop="5sp"
-                        android:paddingRight="5sp"
-                        android:paddingBottom="5sp">
-
-                        <TableRow
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Game Type"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="center_horizontal"
-                                android:text="SquareGame"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-                        </TableRow>
-
-                        <TableRow
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Date Played"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="center_horizontal"
-                                android:text="25-4-2019"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-                        </TableRow>
-
-                        <TableRow
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Game Time"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="center_horizontal"
-                                android:text="05:37"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-                        </TableRow>
-                    </TableLayout>
-
-                </LinearLayout>
-
+                <!--</LinearLayout>-->
 
             </LinearLayout>
 

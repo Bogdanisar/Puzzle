@@ -1,9 +1,11 @@
 package com.example.puzzle;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +16,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.puzzle.history.HistoryItem;
+import com.example.puzzle.history.SquareGameHistory;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -22,14 +27,17 @@ import java.util.Random;
 
 public class ActivitySquareGame extends AppCompatActivity {
     public static String TAG = ActivityMain.COMMON_TAG;
+    public static String HISTORY_PREFERENCE_KEY = "SquareGameHistory";
 
-    static int imageId = R.drawable.p1;
-    static int numHorizontal = 5;
-    static int numVertical = 5;
+    static int imageId = 0;
+    static int smallImageId = 0;
+    static int numHorizontal = 0;
+    static int numVertical = 0;
     static final int maxImageWidth = 1000, maxImageHeight = 1000;
     static int pieceWidth = 0;
     static int pieceHeight = 0;
 
+    String gamemodeString = "Error";
     boolean gamemodeSimple = false;
     boolean gamemodeShell = false;
     boolean gamemodeOnePiece = false;
@@ -89,6 +97,11 @@ public class ActivitySquareGame extends AppCompatActivity {
         this.setGameParameters();
         this.setLimits();
 
+        Log.i(TAG, "================================HISTORY================================");
+        Log.i(TAG, "History: " + PreferenceManager.getDefaultSharedPreferences(this).getString(ActivitySquareGame.HISTORY_PREFERENCE_KEY, ""));
+        Log.i(TAG, "================================HISTORY================================");
+
+
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
         Log.i(TAG, "statusBarHeight: " + this.getStatusBarHeight());
         Log.i(TAG, "statusBarHeight: " + this.getStatusBarHeight());
@@ -109,18 +122,22 @@ public class ActivitySquareGame extends AppCompatActivity {
     private void setGameParameters() {
         Bundle bundle = this.getIntent().getExtras();
         ActivitySquareGame.imageId = (Integer)bundle.get("imageSelected");
+        ActivitySquareGame.smallImageId = (Integer)bundle.get("smallImageSelected");
         ActivitySquareGame.numVertical = (Integer)bundle.get("columnNumber");
         ActivitySquareGame.numHorizontal = (Integer)bundle.get("rowNumber");
 
         Object typeObject = bundle.get("type");
         if (typeObject != null && ((String)typeObject).equals("shell")) {
             this.gamemodeShell = true;
+            this.gamemodeString = "Shell";
         }
         else if (typeObject != null && ((String)typeObject).equals("onePiece")) {
             this.gamemodeOnePiece = true;
+            this.gamemodeString = "One Piece";
         }
         else {
             this.gamemodeSimple = true;
+            this.gamemodeString = "Simple";
         }
 
         this.pieceMatrix = new SquareGamePiece[ActivitySquareGame.numVertical][ActivitySquareGame.numHorizontal];
@@ -221,6 +238,26 @@ public class ActivitySquareGame extends AppCompatActivity {
         return true;
     }
 
+    private void updateHistory() {
+        SharedPreferences shared = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = shared.edit();
+
+        SquareGameHistory item = new SquareGameHistory(
+                this.gamemodeString,
+                0,
+                ActivitySquareGame.smallImageId,
+                0,
+                ActivitySquareGame.numHorizontal,
+                ActivitySquareGame.numVertical
+        );
+
+        String key = ActivitySquareGame.HISTORY_PREFERENCE_KEY;
+        String data = shared.getString(key, null);
+        data = HistoryItem.addInstanceToDataString(data, item);
+        editor.putString(key, data);
+        editor.commit();
+    }
+
     private void updateText() {
         TextView textView = findViewById(R.id.menuGameText);
         String text;
@@ -228,7 +265,9 @@ public class ActivitySquareGame extends AppCompatActivity {
         ++this.numPlacedPieces;
         if (this.numPlacedPieces == ActivitySquareGame.numHorizontal * ActivitySquareGame.numVertical) {
             text = this.getResources().getString(R.string.wonText);
-        } else {
+            this.updateHistory();
+        }
+        else {
             text = this.numPlacedPieces + " / " + ActivitySquareGame.numHorizontal * ActivitySquareGame.numVertical;
         }
 
