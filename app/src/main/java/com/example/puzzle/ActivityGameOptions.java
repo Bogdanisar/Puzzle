@@ -9,15 +9,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameOptions extends AppCompatActivity {
+public class ActivityGameOptions extends AppCompatActivity {
     public static String COMMON_TAG = "puzzletag";
-    public static String TAG = MainActivity.COMMON_TAG;
+    public static String TAG = ActivityMain.COMMON_TAG;
     private EditText rowInput;
     private EditText columnInput;
     private Integer imageSelected = null;
@@ -124,9 +123,9 @@ public class GameOptions extends AppCompatActivity {
             return;
         }
 
-        Log.i(GameOptions.TAG, this.imageSelected.toString());
-        Log.i(GameOptions.TAG, rowNumber.toString());
-        Log.i(GameOptions.TAG, columnNumber.toString());
+        Log.i(ActivityGameOptions.TAG, this.imageSelected.toString());
+        Log.i(ActivityGameOptions.TAG, rowNumber.toString());
+        Log.i(ActivityGameOptions.TAG, columnNumber.toString());
 
         Integer intentImage = null;
         for (int i = 0; i < this.imageViewArray.size(); ++i) {
@@ -137,12 +136,12 @@ public class GameOptions extends AppCompatActivity {
         }
 
         if (intentImage == null) {
-            Log.e(GameOptions.TAG, "imageSelected was not found, reverting to default; id: " + Integer.toString(this.imageSelected));
+            Log.e(ActivityGameOptions.TAG, "imageSelected was not found, reverting to default; id: " + Integer.toString(this.imageSelected));
             intentImage = R.drawable.p1;
         }
 
         if (gamemodeSelected.equals(R.id.gamemodeSquareGameView)) {
-            Intent intent = new Intent(this, SquareGame.class);
+            Intent intent = new Intent(this, ActivitySquareGame.class);
             intent.putExtra("rowNumber", rowNumber);
             intent.putExtra("columnNumber", columnNumber);
             intent.putExtra("imageSelected", intentImage);
@@ -150,7 +149,7 @@ public class GameOptions extends AppCompatActivity {
             startActivity(intent);
         }
         else if (gamemodeSelected.equals(R.id.gamemodeSquareGameShellView)) {
-            Intent intent = new Intent(this, SquareGame.class);
+            Intent intent = new Intent(this, ActivitySquareGame.class);
             intent.putExtra("rowNumber", rowNumber);
             intent.putExtra("columnNumber", columnNumber);
             intent.putExtra("imageSelected", intentImage);
@@ -158,7 +157,7 @@ public class GameOptions extends AppCompatActivity {
             startActivity(intent);
         }
         else if (gamemodeSelected.equals(R.id.gamemodeSquareGameOnePieceView)) {
-            Intent intent = new Intent(this, SquareGame.class);
+            Intent intent = new Intent(this, ActivitySquareGame.class);
             intent.putExtra("rowNumber", rowNumber);
             intent.putExtra("columnNumber", columnNumber);
             intent.putExtra("imageSelected", intentImage);
@@ -166,7 +165,7 @@ public class GameOptions extends AppCompatActivity {
             startActivity(intent);
         }
 
-        //in SquareGame Activity: String value = getIntent().getExtras().getString(key);
+        //in ActivitySquareGame Activity: String value = getIntent().getExtras().getString(key);
     }
 
 

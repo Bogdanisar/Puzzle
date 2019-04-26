@@ -9,18 +9,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".History"></activity>
+        <activity android:name=".ActivityHistory"></activity>
         <activity
-            android:name=".GameOptions"
+            android:name=".ActivityGameOptions"
             android:label="GameOptions"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".ActivityMain"
             android:windowSoftInputMode="stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.puzzle.MainActivity" />
+                android:value="com.example.puzzle.ActivityMain" />
         </activity>
-        <activity android:name=".SquareGame" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".ActivitySquareGame" />
+        <activity android:name=".ActivityMain">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

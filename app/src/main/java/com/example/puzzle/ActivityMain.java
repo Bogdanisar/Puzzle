@@ -6,9 +6,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-public class MainActivity extends AppCompatActivity {
+public class ActivityMain extends AppCompatActivity {
     public static String COMMON_TAG = "puzzletag";
-    public static String TAG = MainActivity.COMMON_TAG;
+    public static String TAG = ActivityMain.COMMON_TAG;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void test(View view) {
-        Intent intent = new Intent(this, SquareGame.class);
+        Intent intent = new Intent(this, ActivitySquareGame.class);
 //        String message = mMessageEditText.getText().toString();
 //        intent.putExtra(EXTRA_MESSAGE, message);
 //        startActivityForResult(intent, TEXT_REQUEST);
@@ -29,12 +29,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startGame(View view) {
-        Intent intent = new Intent(this, GameOptions.class);
+        Intent intent = new Intent(this, ActivityGameOptions.class);
         startActivity(intent);
     }
 
     public void openHistory(View view) {
-        Intent intent = new Intent(this, History.class);
+        Intent intent = new Intent(this, ActivityHistory.class);
         startActivity(intent);
     }
 }
