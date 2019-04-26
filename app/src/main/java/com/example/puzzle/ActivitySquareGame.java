@@ -1,8 +1,10 @@
 package com.example.puzzle;
 
+import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,9 +14,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.Random;
 
 public class ActivitySquareGame extends AppCompatActivity {
     public static String TAG = ActivityMain.COMMON_TAG;
@@ -34,11 +38,14 @@ public class ActivitySquareGame extends AppCompatActivity {
     boolean hasAttached = false;
     int attachedOffsetX = 0, attachedOffsetY = 0;
 
-    SquareGamePiece[][] pieceMatrix;
+    Bitmap imageBitmap = null;
+    SquareGamePiece[][] pieceMatrix = null;
     int numPlacedPieces = 0;
+    int[] di = new int[] {-1, 0, +1, 0};
+    int[] dj = new int[] {0, +1, 0, -1};
 
     RelativeLayout topLayout = null;
-    LinkedList<SquareGamePiece> pieceList = null;
+    LinkedList<SquareGamePiece> pieceList = new LinkedList<>();
 
     public int getStatusBarHeight() {
         int statusBarHeight = 0;
@@ -76,36 +83,27 @@ public class ActivitySquareGame extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_square_game);
-
-        this.setGameParameters();
-
         ActivitySquareGame.TAG += this.getClass().getSimpleName();
-        this.topLayout = findViewById(R.id.squareGamePuzzleLayout);
 
-        Log.i(TAG, "statusBarHeight: " + this.getStatusBarHeight());
-        ActivitySquareGame.pieceWidth = this.getContainerWidth() / numHorizontal;
-        ActivitySquareGame.pieceHeight = this.getContainerHeight() / numVertical;
+        this.topLayout = findViewById(R.id.squareGamePuzzleLayout);
+        this.setGameParameters();
         this.setLimits();
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        Log.i(TAG, "statusBarHeight: " + this.getStatusBarHeight());
         Log.i(TAG, "statusBarHeight: " + this.getStatusBarHeight());
         Log.i(TAG, "minY: " + this.minY);
 
-        Bitmap scaledImage = this.getScaledImage();
+        this.imageBitmap = this.getScaledImage();
 
-        this.pieceList = new LinkedList<>();
-        for (int pos = 0; pos < ActivitySquareGame.numHorizontal * ActivitySquareGame.numVertical; ++pos) {
-            SquareGamePiece piece = new SquareGamePiece(scaledImage, pos, this);
-            pieceList.add(piece);
-            topLayout.addView(piece.image);
+        if (this.gamemodeSimple || this.gamemodeShell) {
+            this.setupSimple(this.imageBitmap);
+        }
+        else {
+            this.setupOnePiece(this.imageBitmap);
         }
 
-        Iterator<SquareGamePiece> it = this.pieceList.descendingIterator();
-        while (it.hasNext()) {
-            SquareGamePiece piece = it.next();
-            ImageView image = piece.image;
-            image.bringToFront();
-        }
-
-        topLayout.requestLayout();
+        this.topLayout.requestLayout();
     }
 
     private void setGameParameters() {
@@ -118,11 +116,17 @@ public class ActivitySquareGame extends AppCompatActivity {
         if (typeObject != null && ((String)typeObject).equals("shell")) {
             this.gamemodeShell = true;
         }
+        else if (typeObject != null && ((String)typeObject).equals("onePiece")) {
+            this.gamemodeOnePiece = true;
+        }
         else {
             this.gamemodeSimple = true;
         }
 
         this.pieceMatrix = new SquareGamePiece[ActivitySquareGame.numVertical][ActivitySquareGame.numHorizontal];
+
+        ActivitySquareGame.pieceWidth = this.getContainerWidth() / numHorizontal;
+        ActivitySquareGame.pieceHeight = this.getContainerHeight() / numVertical;
     }
 
     public void setLimits() {
@@ -154,6 +158,41 @@ public class ActivitySquareGame extends AppCompatActivity {
         return scaledImage;
     }
 
+    private void setupSimple(Bitmap scaledImage) {
+        for (int pos = 0; pos < ActivitySquareGame.numHorizontal * ActivitySquareGame.numVertical; ++pos) {
+            SquareGamePiece piece = new SquareGamePiece(scaledImage, pos, this);
+            pieceList.add(piece);
+            topLayout.addView(piece.image);
+        }
+
+        Iterator<SquareGamePiece> it = this.pieceList.descendingIterator();
+        while (it.hasNext()) {
+            SquareGamePiece piece = it.next();
+            ImageView image = piece.image;
+            image.bringToFront();
+        }
+    }
+
+    private void setupOnePiece(Bitmap scaledImage) {
+        Integer[] presetPositions = new Integer[] {
+                0,
+                ActivitySquareGame.numHorizontal - 1,
+                ActivitySquareGame.numHorizontal * ActivitySquareGame.numVertical - ActivitySquareGame.numHorizontal,
+                ActivitySquareGame.numHorizontal * ActivitySquareGame.numVertical - 1,
+        };
+
+        for (int pos : presetPositions) {
+            SquareGamePiece piece = new SquareGamePiece(scaledImage, pos, this);
+            pieceList.add(piece);
+            topLayout.addView(piece.image);
+            this.placePiece(piece);
+        }
+
+        this.generateNewPiece();
+    }
+
+
+    // methods for piece drag & drop and manipulation;
     public void changePosition(View v, float x, float y) {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) v.getLayoutParams();
 
@@ -182,36 +221,6 @@ public class ActivitySquareGame extends AppCompatActivity {
         return true;
     }
 
-    private boolean pieceCanBePlaced(SquareGamePiece piece) {
-        if (this.gamemodeSimple) {
-            return true;
-        }
-        if (this.gamemodeShell) {
-            int i = piece.targeti, j = piece.targetj;
-            if (i == 0 || i == ActivitySquareGame.numVertical - 1) {
-                return true;
-            }
-            if (j == 0 || j == ActivitySquareGame.numHorizontal - 1) {
-                return true;
-            }
-
-            int[] di = new int[] {-1, 0, +1, 0};
-            int[] dj = new int[] {0, +1, 0, -1};
-            for (int k = 0; k < 4; ++k) {
-                int ni = i + di[k];
-                int nj = j + dj[k];
-
-                if (this.pieceMatrix[ni][nj] != null) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        return true;
-    }
-
     private void updateText() {
         TextView textView = findViewById(R.id.menuGameText);
         String text;
@@ -225,6 +234,132 @@ public class ActivitySquareGame extends AppCompatActivity {
 
         textView.setText(text);
         textView.requestLayout();
+    }
+
+    private void placePiece(SquareGamePiece piece) {
+        int targetX = piece.targetj * ActivitySquareGame.pieceWidth;
+        int targetY = piece.targeti * ActivitySquareGame.pieceHeight;
+
+        this.updateText();
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) piece.image.getLayoutParams();
+        params.leftMargin = targetX;
+        params.topMargin = targetY;
+
+        this.pieceMatrix[piece.targeti][piece.targetj] = piece;
+
+        piece.update(this.pieceMatrix, true);
+        this.pieceList.removeFirst();
+
+        Iterator<SquareGamePiece> it = this.pieceList.descendingIterator();
+        while (it.hasNext()) {
+            SquareGamePiece currentPiece = it.next();
+            ImageView image = currentPiece.image;
+            image.bringToFront();
+        }
+
+        piece.image.requestLayout();
+    }
+
+    private void generateNewPiece() {
+        if (this.numPlacedPieces == ActivitySquareGame.numHorizontal * ActivitySquareGame.numVertical) {
+            return;
+        }
+
+        ArrayList<Integer> availablePositions = new ArrayList<>();
+        for (int i = 0; i < ActivitySquareGame.numVertical; ++i) {
+            for (int j = 0; j < ActivitySquareGame.numHorizontal; ++j) {
+                if (this.pieceMatrix[i][j] != null) {
+                    continue;
+                }
+                // we have an empty position;
+
+                boolean hasNeighbour = false;
+                for (int k = 0; k < di.length; ++k) {
+                    int ni = i + di[k];
+                    int nj = j + dj[k];
+
+                    if ( !(0 <= ni && ni < ActivitySquareGame.numVertical && 0 <= nj && nj < ActivitySquareGame.numHorizontal) ) {
+                        continue;
+                    }
+
+                    if (this.pieceMatrix[ni][nj] != null) {
+                        hasNeighbour = true;
+                        break;
+                    }
+                }
+
+                if (hasNeighbour) {
+                    int pos = i * ActivitySquareGame.numHorizontal + j;
+                    availablePositions.add(pos);
+                }
+            }
+        }
+
+        Random random = new Random();
+        int idx = random.nextInt(availablePositions.size());
+        int pos = availablePositions.get(idx);
+
+        int[] outerColor = new int[4], innerColor = new int[4];
+        for (int k = 0; k < 4; ++k) {
+            outerColor[k] = ContextCompat.getColor(this, R.color.outerOnePieceColor);
+            innerColor[k] = ContextCompat.getColor(this, R.color.innerOnePieceColor);
+        }
+
+        SquareGamePiece piece = new SquareGamePiece(this.imageBitmap, pos, this, outerColor, innerColor);
+        this.pieceList.add(piece);
+        this.topLayout.addView(piece.image);
+
+        piece.image.bringToFront();
+        piece.image.requestLayout();
+    }
+
+    private boolean pieceCanBePlaced(SquareGamePiece piece) {
+        if (this.gamemodeSimple) {
+            return true;
+        }
+        if (this.gamemodeShell) {
+            int i = piece.targeti, j = piece.targetj;
+            if (i == 0 || i == ActivitySquareGame.numVertical - 1) {
+                return true;
+            }
+            if (j == 0 || j == ActivitySquareGame.numHorizontal - 1) {
+                return true;
+            }
+
+            for (int k = 0; k < di.length; ++k) {
+                int ni = i + this.di[k];
+                int nj = j + this.dj[k];
+
+                if (this.pieceMatrix[ni][nj] != null) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean pieceIsCloseEnough(SquareGamePiece piece, int eventX, int eventY) {
+        int cornerX = eventX - this.attachedOffsetX;
+        cornerX = Math.max(cornerX, this.minX);
+        cornerX = Math.min(cornerX, this.maxX);
+
+        int cornerY = eventY - this.attachedOffsetY;
+        cornerY = Math.max(cornerY, this.minY);
+        cornerY = Math.min(cornerY, this.maxY);
+
+        int errorX = ActivitySquareGame.pieceWidth / 3;
+        int errorY = ActivitySquareGame.pieceHeight / 3;
+
+        int targetX = piece.targetj * ActivitySquareGame.pieceWidth;
+        int targetY = piece.targeti * ActivitySquareGame.pieceHeight;
+
+        if (Math.abs(targetX - cornerX) <= errorX && Math.abs(targetY - cornerY) <= errorY) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -263,8 +398,7 @@ public class ActivitySquareGame extends AppCompatActivity {
             }
         }
         else if (event.getAction() == MotionEvent.ACTION_UP) {
-//            String str = "The screen has been released at: " + event.getX() + ", " + event.getY();
-//            Log.i("myTag", str);
+//            Log.i("myTag", "The screen has been released at: " + event.getX() + ", " + event.getY());
 //            Log.i("myTag", "============================");
 
             if (this.hasAttached == false) {
@@ -273,40 +407,14 @@ public class ActivitySquareGame extends AppCompatActivity {
 
             SquareGamePiece piece = this.pieceList.getFirst();
 
-            int cornerX = eventX - this.attachedOffsetX;
-            cornerX = Math.max(cornerX, this.minX);
-            cornerX = Math.min(cornerX, this.maxX);
+            Log.i(TAG, "pieceCanBePlaced: " + this.pieceCanBePlaced(piece)); /////////////////////////////////////////////
 
-            int cornerY = eventY - this.attachedOffsetY;
-            cornerY = Math.max(cornerY, this.minY);
-            cornerY = Math.min(cornerY, this.maxY);
+            if ( (this.pieceCanBePlaced(piece)) && this.pieceIsCloseEnough(piece, eventX, eventY) ) {
+                placePiece(piece);
 
-            int errorX = ActivitySquareGame.pieceWidth / 3;
-            int errorY = ActivitySquareGame.pieceHeight / 3;
-
-            int targetX = piece.targetj * ActivitySquareGame.pieceWidth;
-            int targetY = piece.targeti * ActivitySquareGame.pieceHeight;
-
-            Log.i(TAG, "pieceCanBePlace: " + this.pieceCanBePlaced(piece)); /////////////////////////////////////////////
-            if ( (this.pieceCanBePlaced(piece)) && (Math.abs(targetX - cornerX) <= errorX && Math.abs(targetY - cornerY) <= errorY) ) {
-                this.updateText();
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) piece.image.getLayoutParams();
-                params.leftMargin = targetX;
-                params.topMargin = targetY;
-
-                this.pieceMatrix[piece.targeti][piece.targetj] = piece;
-
-                piece.update(this.pieceMatrix, true);
-                this.pieceList.removeFirst();
-
-                Iterator<SquareGamePiece> it = this.pieceList.descendingIterator();
-                while (it.hasNext()) {
-                    SquareGamePiece currentPiece = it.next();
-                    ImageView image = currentPiece.image;
-                    image.bringToFront();
+                if (this.gamemodeOnePiece) {
+                    this.generateNewPiece();
                 }
-
-                this.topLayout.requestLayout();
             }
 
             this.hasAttached = false;

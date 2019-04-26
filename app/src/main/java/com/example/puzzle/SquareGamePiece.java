@@ -2,6 +2,7 @@ package com.example.puzzle;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.v4.content.ContextCompat;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -13,9 +14,14 @@ class SquareGamePiece {
     ImageView image;
     Bitmap originalBitmap;
     int targeti, targetj;
-    int[] outerColor = new int[4], innerColor = new int[4];
+    int[] outerColor = new int[4];
+    int[] innerColor = new int[4];
 
     SquareGamePiece(Bitmap imageBitmap, int pos, ActivitySquareGame context) {
+        this(imageBitmap, pos, context, null, null);
+    }
+
+    SquareGamePiece(Bitmap imageBitmap, int pos, ActivitySquareGame context, int[] outerColorParameter, int[] innerColorParameter) {
         int i = pos / ActivitySquareGame.numHorizontal;
         int j = pos % ActivitySquareGame.numHorizontal;
         this.targeti = i;
@@ -41,8 +47,16 @@ class SquareGamePiece {
         params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         this.image.setLayoutParams(params);
 
-        this.getColors(i, j, this.outerColor, this.innerColor, context);
-        this.drawMarginIf(new boolean[] {true, true, true, true});
+        this.setBaseColors(context);
+        this.updateColorsForPosition(i, j, this.outerColor, this.innerColor, context);
+
+        if (outerColorParameter != null && innerColorParameter != null) {
+            this.updateColorsForPosition(i, j, outerColorParameter, innerColorParameter, context);
+            this.drawMarginIf(new boolean[] {true, true, true, true}, outerColorParameter, innerColorParameter);
+        }
+        else {
+            this.drawMarginIf(new boolean[] {true, true, true, true}, this.outerColor, this.innerColor);
+        }
     }
 
     public int getRandomPosition(int totalSize, int imageSize) {
@@ -51,49 +65,14 @@ class SquareGamePiece {
         return random.nextInt(totalSize - imageSize + 1);
     }
 
-    public void update(SquareGamePiece[][] pieceMatrix, boolean updateNeighbours) {
-        int[] dx = new int[] {-1, 0, +1, 0};
-        int[] dy = new int[] {0, +1, 0, -1};
-        boolean[] shouldDraw = new boolean[] {true, true, true, true};
-
+    private void setBaseColors(Context context) {
         for (int k = 0; k < 4; ++k) {
-            int nx = this.targeti + dx[k];
-            int ny = this.targetj + dy[k];
-
-            if (!(0 <= nx && nx < ActivitySquareGame.numVertical && 0 <= ny && ny < ActivitySquareGame.numHorizontal)) {
-                continue;
-            }
-
-            if (pieceMatrix[nx][ny] != null) {
-                shouldDraw[k] = false;
-
-                if (updateNeighbours) {
-                    pieceMatrix[nx][ny].update(pieceMatrix, false);
-                }
-            }
+            this.outerColor[k] = ContextCompat.getColor(context, R.color.outerPieceColor);
+            this.innerColor[k] = ContextCompat.getColor(context, R.color.innerPieceColor);
         }
-
-        this.drawMarginIf(shouldDraw);
     }
 
-    public void drawMarginIf(boolean[] shouldDraw) {
-        Bitmap currentBitmap = this.originalBitmap.copy(this.originalBitmap.getConfig(), true);
-
-        for (int marginIndex = 0; marginIndex < 4; ++marginIndex) {
-            if (shouldDraw[marginIndex]) {
-                this.drawMargin(currentBitmap, this.outerColor[marginIndex], this.innerColor[marginIndex], marginIndex);
-            }
-        }
-
-        this.image.setImageBitmap(currentBitmap);
-    }
-
-    public void getColors(int i, int j, int[] outerColor, int[] innerColor, Context context) {
-        for (int k = 0; k < 4; ++k) {
-            outerColor[k] = context.getResources().getColor(R.color.outerPieceColor);
-            innerColor[k] = context.getResources().getColor(R.color.innerPieceColor);
-        }
-
+    public void updateColorsForPosition(int i, int j, int[] outerColor, int[] innerColor, Context context) {
         if (i == 0) {
             outerColor[0] = context.getResources().getColor(R.color.outerMarginColor);
             innerColor[0] = context.getResources().getColor(R.color.innerMarginColor);
@@ -111,6 +90,18 @@ class SquareGamePiece {
             outerColor[1] = context.getResources().getColor(R.color.outerMarginColor);
             innerColor[1] = context.getResources().getColor(R.color.innerMarginColor);
         }
+    }
+
+    public void drawMarginIf(boolean[] shouldDraw, int[] outerColor, int[] innerColor) {
+        Bitmap currentBitmap = this.originalBitmap.copy(this.originalBitmap.getConfig(), true);
+
+        for (int marginIndex = 0; marginIndex < 4; ++marginIndex) {
+            if (shouldDraw[marginIndex]) {
+                this.drawMargin(currentBitmap, outerColor[marginIndex], innerColor[marginIndex], marginIndex);
+            }
+        }
+
+        this.image.setImageBitmap(currentBitmap);
     }
 
     public void drawMargin(Bitmap bitmap, int outerColor, int innerColor, int marginIndex) {
@@ -190,5 +181,30 @@ class SquareGamePiece {
                 bitmap.setPixel(bitmap.getWidth() - x - 1, y, color);
             }
         }
+    }
+
+    public void update(SquareGamePiece[][] pieceMatrix, boolean updateNeighbours) {
+        int[] dx = new int[] {-1, 0, +1, 0};
+        int[] dy = new int[] {0, +1, 0, -1};
+        boolean[] shouldDraw = new boolean[] {true, true, true, true};
+
+        for (int k = 0; k < 4; ++k) {
+            int nx = this.targeti + dx[k];
+            int ny = this.targetj + dy[k];
+
+            if (!(0 <= nx && nx < ActivitySquareGame.numVertical && 0 <= ny && ny < ActivitySquareGame.numHorizontal)) {
+                continue;
+            }
+
+            if (pieceMatrix[nx][ny] != null) {
+                shouldDraw[k] = false;
+
+                if (updateNeighbours) {
+                    pieceMatrix[nx][ny].update(pieceMatrix, false);
+                }
+            }
+        }
+
+        this.drawMarginIf(shouldDraw, this.outerColor, this.innerColor);
     }
 }

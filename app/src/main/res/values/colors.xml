@@ -11,5 +11,8 @@
     <color name="innerMarginColor">#FF0000</color>
     <color name="outerMarginColor">#000000</color>
 
+    <color name="innerOnePieceColor">#0000FF</color>
+    <color name="outerOnePieceColor">#000000</color>
+
     <color name="squareGameButtonColor">#FFFFFF</color>
 </resources>
