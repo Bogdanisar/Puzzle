@@ -1,6 +1,10 @@
 package com.example.puzzle;
 
+import com.example.puzzle.history.SquareGameHistory;
+
 import org.junit.Test;
+
+import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
