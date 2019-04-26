@@ -30,9 +30,9 @@ public class ActivitySquareGame extends AppCompatActivity {
     static int pieceWidth = 0;
     static int pieceHeight = 0;
 
-    static boolean gamemodeSimple = false;
-    static boolean gamemodeShell = false;
-    static boolean gamemodeOnePiece = false;
+    boolean gamemodeSimple = false;
+    boolean gamemodeShell = false;
+    boolean gamemodeOnePiece = false;
 
     int minX, minY, maxX, maxY;
     boolean hasAttached = false;
