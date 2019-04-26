@@ -1,36 +1,35 @@
 package com.example.puzzle.history;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.puzzle.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class SquareGameHistory extends HistoryItem {
     static public String fieldSeparator = "&";
     static public String keyValueSeparator = "=";
 
     private String gamemode;
-    private Long startTimeInSeconds;
+    private Long startTimeInMilliseconds;
     private Integer imageId;
     private Long durationInMilliseconds;
     private Integer numHorizontal, numVertical;
 
-    public SquareGameHistory(String gamemode, long startTimeInSeconds, int imageId, long durationInMilliseconds, int numHorizontal, int numVertical) {
+    public SquareGameHistory(String gamemode, long startTimeInMilliseconds, int imageId, long durationInMilliseconds, int numHorizontal, int numVertical) {
         if ("".equals(gamemode)) {
             gamemode = null;
         }
 
         this.gamemode = gamemode;
-        this.startTimeInSeconds = startTimeInSeconds;
+        this.startTimeInMilliseconds = startTimeInMilliseconds;
         this.imageId = imageId;
         this.durationInMilliseconds = durationInMilliseconds;
         this.numHorizontal = numHorizontal;
@@ -47,8 +46,8 @@ public class SquareGameHistory extends HistoryItem {
         return imageId;
     }
 
-    public Long getStartTimeInSeconds() {
-        return startTimeInSeconds;
+    public Long getStartTimeInMilliseconds() {
+        return startTimeInMilliseconds;
     }
 
     public long getDurationInMilliseconds() {
@@ -85,7 +84,7 @@ public class SquareGameHistory extends HistoryItem {
             }
 
             fieldValue = keyValue[1];
-            if (fieldKey.equals("startTimeInSeconds")) {
+            if (fieldKey.equals("startTimeInMilliseconds")) {
                 startTimeInSeconds = Long.parseLong(fieldValue);
             }
             else if (fieldKey.equals("durationInMilliseconds")) {
@@ -114,7 +113,7 @@ public class SquareGameHistory extends HistoryItem {
         }
         result += "gamemode" + SquareGameHistory.keyValueSeparator + add + SquareGameHistory.fieldSeparator;
 
-        result += "startTimeInSeconds" + SquareGameHistory.keyValueSeparator + this.startTimeInSeconds + SquareGameHistory.fieldSeparator;
+        result += "startTimeInMilliseconds" + SquareGameHistory.keyValueSeparator + this.startTimeInMilliseconds + SquareGameHistory.fieldSeparator;
         result += "durationInMilliseconds" + SquareGameHistory.keyValueSeparator + this.durationInMilliseconds + SquareGameHistory.fieldSeparator;
         result += "imageId" + SquareGameHistory.keyValueSeparator + this.imageId + SquareGameHistory.fieldSeparator;
         result += "numHorizontal" + SquareGameHistory.keyValueSeparator + this.numHorizontal + SquareGameHistory.fieldSeparator;
@@ -124,6 +123,10 @@ public class SquareGameHistory extends HistoryItem {
     }
 
     public static SquareGameHistory[] getInstanceArray(String data) {
+        if (data == null || data.length() == 0) {
+            return new SquareGameHistory[0];
+        }
+
         ArrayList<SquareGameHistory> list = new ArrayList<>();
 
         for (String itemData : data.split(HistoryItem.itemSeparator)) {
@@ -153,7 +156,7 @@ public class SquareGameHistory extends HistoryItem {
             return false;
         }
 
-        if (this.startTimeInSeconds.equals(other.startTimeInSeconds) == false) {
+        if (this.startTimeInMilliseconds.equals(other.startTimeInMilliseconds) == false) {
             return false;
         }
         if (this.durationInMilliseconds.equals(other.durationInMilliseconds) == false) {
@@ -174,22 +177,52 @@ public class SquareGameHistory extends HistoryItem {
 
     @Override
     public View getViewForHistory(Activity activity) {
-        int sdk = android.os.Build.VERSION.SDK_INT;
-
         LayoutInflater inflater = activity.getLayoutInflater();
         View top = inflater.inflate(R.layout.history_item, null, false);
 
         ImageView image = top.findViewById(R.id.historyItemImageView);
         image.setImageResource(this.imageId);
 
+
         TextView gamemodeView = top.findViewById(R.id.historyItemGamemode);
         gamemodeView.setText(this.gamemode);
 
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(this.startTimeInMilliseconds);
+        Date date = calendar.getTime();
+        String dateString = new SimpleDateFormat("HH:mm:ss 'on' dd/MM/yyyy").format(date);
+
         TextView datePlayedView = top.findViewById(R.id.historyItemDate);
-        datePlayedView.setText(Long.toString(this.startTimeInSeconds)); ////////////////
+        datePlayedView.setText(dateString);
+
+
+        Long duration = this.durationInMilliseconds;
+        long numDays = duration / (1000 * 60 * 60 * 24);
+        duration %= (1000 * 60 * 60 * 24);
+        long numHours = duration / (1000 * 60 * 60);
+        duration %= (1000 * 60 * 60);
+        long numMinutes = duration / (1000 * 60);
+        duration %= (1000 * 60);
+        double numSeconds = (double)duration / 1000;
+
+        String durationString;
+        if (numDays != 0) {
+            durationString = String.format("%d D, %d H, %d M, %.2f S", numDays, numHours, numMinutes, numSeconds);
+        }
+        else if (numHours != 0) {
+            durationString = String.format("%d H, %d M, %.2f S", numHours, numMinutes, numSeconds);
+        }
+        else if (numMinutes != 0) {
+            durationString = String.format("%d Min, %.2f Sec", numMinutes, numSeconds);
+        }
+        else {
+            durationString = String.format("%.2f Seconds", numSeconds);
+        }
 
         TextView gameTimeView = top.findViewById(R.id.historyItemTimePlayed);
-        gameTimeView.setText(Long.toString(this.durationInMilliseconds));
+        gameTimeView.setText(durationString);
+
 
         TextView dimensionsView = top.findViewById(R.id.historyItemDimensions);
         dimensionsView.setText(this.numHorizontal + "x" + this.numVertical);

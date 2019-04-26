@@ -24,7 +24,6 @@ public class ActivityHistory extends AppCompatActivity {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         SquareGameHistory[] itemArray = SquareGameHistory.getInstanceArray(preferences.getString(key, ""));
 
-//        item = new SquareGameHistory("Test gamemode", 200, R.drawable.p2small, 200, 5, 5);?
         for (SquareGameHistory item : itemArray) {
             View view = item.getViewForHistory(this);
             layout.addView(view);

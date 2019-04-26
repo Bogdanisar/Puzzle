@@ -20,6 +20,7 @@ import com.example.puzzle.history.HistoryItem;
 import com.example.puzzle.history.SquareGameHistory;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
@@ -33,6 +34,9 @@ public class ActivitySquareGame extends AppCompatActivity {
     static int smallImageId = 0;
     static int numHorizontal = 0;
     static int numVertical = 0;
+
+    static Long startTimeInMilliseconds;
+
     static final int maxImageWidth = 1000, maxImageHeight = 1000;
     static int pieceWidth = 0;
     static int pieceHeight = 0;
@@ -141,9 +145,10 @@ public class ActivitySquareGame extends AppCompatActivity {
         }
 
         this.pieceMatrix = new SquareGamePiece[ActivitySquareGame.numVertical][ActivitySquareGame.numHorizontal];
-
         ActivitySquareGame.pieceWidth = this.getContainerWidth() / numHorizontal;
         ActivitySquareGame.pieceHeight = this.getContainerHeight() / numVertical;
+
+        ActivitySquareGame.startTimeInMilliseconds = Calendar.getInstance().getTimeInMillis();
     }
 
     public void setLimits() {
@@ -242,11 +247,13 @@ public class ActivitySquareGame extends AppCompatActivity {
         SharedPreferences shared = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = shared.edit();
 
+        Long endTimeInMilliseconds = Calendar.getInstance().getTimeInMillis();
+
         SquareGameHistory item = new SquareGameHistory(
                 this.gamemodeString,
-                0,
+                ActivitySquareGame.startTimeInMilliseconds,
                 ActivitySquareGame.smallImageId,
-                0,
+                endTimeInMilliseconds - ActivitySquareGame.startTimeInMilliseconds,
                 ActivitySquareGame.numHorizontal,
                 ActivitySquareGame.numVertical
         );
