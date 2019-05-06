@@ -178,6 +178,11 @@
                     style="@style/ImageSelectView"
                     app:srcCompat="@drawable/p10small" />
 
+                <ImageView
+                    android:id="@+id/imageView11"
+                    style="@style/ImageSelectView"
+                    app:srcCompat="@drawable/p11small" />
+
             </LinearLayout>
         </ScrollView>
 

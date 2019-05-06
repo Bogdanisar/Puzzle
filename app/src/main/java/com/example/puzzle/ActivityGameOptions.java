@@ -57,6 +57,9 @@ public class ActivityGameOptions extends AppCompatActivity {
 
         imageViewArray.add(R.id.imageView10);
         imageResourceArray.add(R.drawable.p10);
+
+        imageViewArray.add(R.id.imageView11);
+        imageResourceArray.add(R.drawable.p11);
     }
 
     @Override
