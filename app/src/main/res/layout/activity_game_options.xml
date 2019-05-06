@@ -87,7 +87,7 @@
 
                 <TextView
                     android:id="@+id/gamemodeSquareGameView"
-                    android:text="Square Game"
+                    android:text="Square Game - Simple"
                     style="@style/gamemodeSelectView"/>
 
                 <TextView
