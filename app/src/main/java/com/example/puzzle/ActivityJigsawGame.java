@@ -10,6 +10,7 @@ import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -17,13 +18,18 @@ import com.example.puzzle.jigsaw.JigsawPiece;
 import com.example.puzzle.jigsaw.JigsawPieceGroup;
 
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.ListIterator;
 import java.util.Random;
+
+import static java.lang.Float.NaN;
+import static java.lang.Float.isNaN;
 
 public class ActivityJigsawGame extends AppCompatActivity {
     public static final String TAG = ActivityMain.COMMON_TAG + "_JigsawGame";
     public static final double initialMarginPercent = 0.05;
-    static final int maxImageWidth = 1000, maxImageHeight = 1000;
+    public static final int maxImageWidth = 1000, maxImageHeight = 1000;
 
     public RelativeLayout topLayout = null;
     public int initialHeightMargin = 0, initialWidthMargin = 0;
@@ -34,7 +40,9 @@ public class ActivityJigsawGame extends AppCompatActivity {
     public Bitmap imageBitmap = null;
 
     public JigsawPiece.NICHE_STATE[][] rightMargin, bottomMargin;
-    LinkedList<JigsawPieceGroup> pieceGroupList = new LinkedList<>();
+    public LinkedList<JigsawPieceGroup> pieceGroupList = new LinkedList<>();
+    private JigsawPieceGroup touchedGroup = null;
+    private float lastEventX = 0, lastEventY = 0;
 
     long startTimeInMilliseconds = 0;
 
@@ -96,6 +104,9 @@ public class ActivityJigsawGame extends AppCompatActivity {
 //        this.topLayout.addView(piece.getView());
 
 
+        ///// ================================================================================================ ///////////
+//        this.pieceGroupList.get(0).addGroup(this.pieceGroupList.get(1));
+//        this.pieceGroupList.remove(1);
 
         this.topLayout.requestLayout();
     }
@@ -191,6 +202,92 @@ public class ActivityJigsawGame extends AppCompatActivity {
         }
     }
 
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        boolean result = this.dealWithMotionEvent(event);
+        this.topLayout.requestLayout();
+
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            this.lastEventX = this.lastEventY = NaN;
+        }
+        else {
+            int eventX = (int)event.getX();
+            int eventY = (int)event.getY() - this.getTopBarDimension();
+            this.lastEventX = eventX;
+            this.lastEventY = eventY;
+        }
+
+        return result;
+    }
+
+    public boolean dealWithMotionEvent(MotionEvent event) {
+        int eventX = (int)event.getX();
+        int eventY = (int)event.getY() - this.getTopBarDimension();
+
+        if (eventY < 0) {
+            return true;
+        }
+
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            ListIterator<JigsawPieceGroup> it = this.pieceGroupList.listIterator();
+
+            while (it.hasNext()) {
+                JigsawPieceGroup group = it.next();
+
+                boolean touching = false;
+                for (JigsawPiece piece : group.getPieceList()) {
+                    if ( piece.isTouchedBy(eventX, eventY) ) {
+                        touching = true;
+                        break;
+                    }
+                }
+
+                if (touching) {
+                    touchedGroup = group;
+                    it.remove();
+                    break;
+                }
+            }
+        }
+        else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+            if (this.touchedGroup != null) {
+                if (Float.isNaN(this.lastEventX) || Float.isNaN(this.lastEventY)) {
+                    return true;
+                }
+                else {
+                    float xDiff = eventX - this.lastEventX;
+                    float yDiff = eventY - this.lastEventY;
+
+                    this.touchedGroup.setTranslationByDifference(xDiff, yDiff);
+                }
+
+            }
+            else {
+                float xDiff = eventX - this.lastEventX;
+                float yDiff = eventY - this.lastEventY;
+
+                Iterator<JigsawPieceGroup> it = this.pieceGroupList.descendingIterator();
+                while (it.hasNext()) {
+                    JigsawPieceGroup group = it.next();
+                    group.setTranslationByDifference(xDiff, yDiff);
+                }
+            }
+        }
+        else if (event.getAction() == MotionEvent.ACTION_UP) {
+            if (this.touchedGroup == null) {
+                return true;
+            }
+
+            float xDiff = eventX - this.lastEventX;
+            float yDiff = eventY - this.lastEventY;
+            this.touchedGroup.setTranslationByDifference(xDiff, yDiff);
+            this.pieceGroupList.addFirst(this.touchedGroup);
+            this.touchedGroup = null;
+        }
+
+        return true;
+    }
 
 
 

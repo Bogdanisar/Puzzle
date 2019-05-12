@@ -161,6 +161,7 @@ public class JigsawPiece {
     protected JigsawPieceGroup group;
     protected ImageView view;
     private Bitmap pieceMask;
+    private Bitmap pieceBitmap;
 
     public int getI() {
         return i;
@@ -206,6 +207,52 @@ public class JigsawPiece {
         this.group = group;
     }
 
+    public int getHeight() {
+        if (this.pieceBitmap == null) {
+            return 0;
+        }
+
+        return this.pieceBitmap.getHeight();
+    }
+
+    public int getWidth() {
+        if (this.pieceBitmap == null) {
+            return 0;
+        }
+
+        return this.pieceBitmap.getWidth();
+    }
+
+
+
+
+    public static NICHE_STATE[] getNicheStates(int i, int j, NICHE_STATE[][] rightMargin, NICHE_STATE[][] bottomMargin) {
+        NICHE_STATE[] states = new NICHE_STATE[4];
+
+        // determine TOP state
+        if (i == 0) {
+            states[TOP] = NICHE_STATE.NONE;
+        }
+        else {
+            states[TOP] = JigsawPiece.invertState(bottomMargin[i - 1][j]);
+        }
+
+        // determine RIGHT state
+        states[RIGHT] = rightMargin[i][j];
+
+        // determine BOTTOM state
+        states[BOTTOM] = bottomMargin[i][j];
+
+        // determine LEFT state
+        if (j == 0) {
+            states[LEFT] = NICHE_STATE.NONE;
+        }
+        else {
+            states[LEFT] = JigsawPiece.invertState(rightMargin[i][j - 1]);
+        }
+
+        return states;
+    }
 
     private void setMaskAndOffsets(NICHE_STATE[] state) {
         this.leftOffset = 0;
@@ -393,7 +440,8 @@ public class JigsawPiece {
         // add the border
         addBorder(Color.TRANSPARENT, piecePixels, this.pieceMask.getHeight(), this.pieceMask.getWidth());
 
-        this.pieceMask.setPixels(piecePixels, 0, this.pieceMask.getWidth(), 0, 0, this.pieceMask.getWidth(), this.pieceMask.getHeight());
+        this.pieceBitmap = this.pieceMask.copy(this.pieceMask.getConfig(), true);
+        this.pieceBitmap.setPixels(piecePixels, 0, this.pieceMask.getWidth(), 0, 0, this.pieceMask.getWidth(), this.pieceMask.getHeight());
 
 
         this.view = new ImageView(game);
@@ -407,19 +455,20 @@ public class JigsawPiece {
         params.addRule(RelativeLayout.ALIGN_PARENT_START);
         this.view.setLayoutParams(params);
 
-        ActivityJigsawGame.setImageBackground(this.view, this.pieceMask, game);
+        ActivityJigsawGame.setImageBackground(this.view, this.pieceBitmap, game);
     }
 
     private void setRandomPosition(Rect centerRect) {
-        int minX = centerRect.left, maxX = centerRect.right - this.pieceMask.getWidth();
-        int minY = centerRect.top, maxY = centerRect.bottom - this.pieceMask.getHeight();
+        int minX = centerRect.left, maxX = centerRect.right - this.getWidth();
+        int minY = centerRect.top, maxY = centerRect.bottom - this.getHeight();
 
         int x = ActivityJigsawGame.getRandomInt(minX, maxX);
         int y = ActivityJigsawGame.getRandomInt(minY, maxY);
 
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) this.view.getLayoutParams();
-        params.leftMargin = x;
-        params.topMargin = y;
+        params.leftMargin = 0;
+        params.topMargin = 0;
+        this.setTraslation(x, y);
     }
 
 
@@ -443,37 +492,29 @@ public class JigsawPiece {
         return piece;
     }
 
-    public static NICHE_STATE[] getNicheStates(int i, int j, NICHE_STATE[][] rightMargin, NICHE_STATE[][] bottomMargin) {
-        NICHE_STATE[] states = new NICHE_STATE[4];
+    public boolean isTouchedBy(float x, float y) {
+        ImageView view = this.getView();
+        float left = view.getTranslationX();
+        float right = left + this.getWidth();
+        float top = view.getTranslationY();
+        float bottom = top + this.getHeight();
 
-        // determine TOP state
-        if (i == 0) {
-            states[TOP] = NICHE_STATE.NONE;
-        }
-        else {
-            states[TOP] = JigsawPiece.invertState(bottomMargin[i - 1][j]);
-        }
-
-        // determine RIGHT state
-        states[RIGHT] = rightMargin[i][j];
-
-        // determine BOTTOM state
-        states[BOTTOM] = bottomMargin[i][j];
-
-        // determine LEFT state
-        if (j == 0) {
-            states[LEFT] = NICHE_STATE.NONE;
-        }
-        else {
-            states[LEFT] = JigsawPiece.invertState(rightMargin[i][j - 1]);
+        RectF rect = new RectF(left, top, right, bottom);
+        if (rect.contains(x, y) == false) {
+            return false;
         }
 
-        return states;
+        x -= left;
+        y -= top;
+
+        if (this.pieceBitmap.getPixel((int)x, (int)y) == Color.TRANSPARENT) {
+            return false;
+        }
+        return true;
     }
 
-
-
-
-
-
+    public void setTraslation(float translationX, float translationY) {
+        this.getView().setTranslationX(translationX - this.leftOffset);
+        this.getView().setTranslationY(translationY - this.topOffset);
+    }
 }
