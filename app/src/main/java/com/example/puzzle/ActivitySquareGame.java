@@ -1,6 +1,5 @@
 package com.example.puzzle;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -70,7 +69,7 @@ public class ActivitySquareGame extends AppCompatActivity {
     }
 
     public int getTopBarDimension() {
-        int menuId = R.dimen.squareGameMenuSize;
+        int menuId = R.dimen.TopGameMenu_Size;
         int menuSize = (int)this.getResources().getDimension(menuId);
         return getStatusBarHeight() + menuSize;
     }
@@ -271,7 +270,7 @@ public class ActivitySquareGame extends AppCompatActivity {
 
         ++this.numPlacedPieces;
         if (this.numPlacedPieces == ActivitySquareGame.numHorizontal * ActivitySquareGame.numVertical) {
-            text = this.getResources().getString(R.string.wonText);
+            text = this.getResources().getString(R.string.TopGameMenu_WonText);
             this.updateHistory();
         }
         else {

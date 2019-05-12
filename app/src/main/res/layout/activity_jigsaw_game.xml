@@ -2,11 +2,12 @@
 <android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/squareGameLayout"
+    android:id="@+id/JigsawGameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ActivitySquareGame">
+    android:layout_weight="1.0"
+    tools:context=".ActivityJigsawGame">
 
     <android.support.v7.widget.LinearLayoutCompat
         android:layout_alignParentTop="true"
@@ -63,12 +64,64 @@
     </android.support.v7.widget.LinearLayoutCompat>
 
     <RelativeLayout
-        android:id="@+id/squareGamePuzzleLayout"
+        android:id="@+id/jigsawGamePuzzleLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_weight="1.0"
         android:background="@color/colorPrimaryDark">
 
     </RelativeLayout>
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/BotGameMenu_Size"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal"
+        android:weightSum="1.0">
+
+        <RelativeLayout
+            android:layout_weight="0.25"
+            android:layout_width="0px"
+            android:layout_height="match_parent">
+
+            <Button
+                android:text="Zoom in"
+                style="@style/TopGameMenu_Button">
+            </Button>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_weight="0.5"
+            android:layout_width="0px"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="45px"
+                android:text="Placeholder">
+            </TextView>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_weight="0.25"
+            android:layout_width="0px"
+            android:layout_height="match_parent">
+
+            <Button
+                android:text="Zoom out"
+                style="@style/TopGameMenu_Button">
+            </Button>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.LinearLayoutCompat>
 
 
 </android.support.v7.widget.LinearLayoutCompat>

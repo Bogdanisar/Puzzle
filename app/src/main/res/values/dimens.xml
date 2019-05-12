@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="squareGameMenuSize">128px</dimen>
+    <dimen name="TopGameMenu_Size">128px</dimen>
+    <dimen name="BotGameMenu_Size">128px</dimen>
 </resources>

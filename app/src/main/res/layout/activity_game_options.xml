@@ -100,6 +100,11 @@
                     android:text="Square Game - One Piece"
                     style="@style/gamemodeSelectView"/>
 
+                <TextView
+                    android:id="@+id/gamemodeJigsawGameView"
+                    android:text="Jigsaw Game"
+                    style="@style/gamemodeSelectView"/>
+
 
             </LinearLayout>
         </ScrollView>
