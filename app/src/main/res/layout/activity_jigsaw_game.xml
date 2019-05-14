@@ -88,6 +88,7 @@
 
             <Button
                 android:text="Zoom in"
+                android:onClick="zoomIn"
                 style="@style/TopGameMenu_Button">
             </Button>
 
@@ -116,6 +117,7 @@
 
             <Button
                 android:text="Zoom out"
+                android:onClick="zoomOut"
                 style="@style/TopGameMenu_Button">
             </Button>
 

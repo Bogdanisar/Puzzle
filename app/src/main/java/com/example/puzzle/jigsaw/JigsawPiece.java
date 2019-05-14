@@ -21,6 +21,177 @@ import java.util.LinkedList;
 import java.util.Random;
 
 public class JigsawPiece {
+
+    // instance code;
+    protected int i, j, leftOffset, topOffset;
+    protected JigsawPieceGroup group;
+    protected ImageView view;
+    private Bitmap pieceMask;
+    private Bitmap pieceBitmap;
+
+    public int getI() {
+        return i;
+    }
+
+    public void setI(int i) {
+        this.i = i;
+    }
+
+    public int getJ() {
+        return j;
+    }
+
+    public void setJ(int j) {
+        this.j = j;
+    }
+
+    public int getLeftOffset() {
+        return leftOffset;
+    }
+
+    public void setLeftOffset(int leftOffset) {
+        this.leftOffset = leftOffset;
+    }
+
+    public int getTopOffset() {
+        return topOffset;
+    }
+
+    public void setTopOffset(int topOffset) {
+        this.topOffset = topOffset;
+    }
+
+    public ImageView getView() {
+        return view;
+    }
+
+    public JigsawPieceGroup getGroup() {
+        return group;
+    }
+
+    public void setGroup(JigsawPieceGroup group) {
+        this.group = group;
+    }
+
+    public int getHeight() {
+        if (this.pieceBitmap == null) {
+            return 0;
+        }
+
+        return (int) (ActivityJigsawGame.dimensionPercentage *  this.pieceBitmap.getHeight());
+    }
+
+    public int getWidth() {
+        if (this.pieceBitmap == null) {
+            return 0;
+        }
+
+        return (int) (ActivityJigsawGame.dimensionPercentage *  this.pieceBitmap.getWidth());
+    }
+
+    public int getContentHeight() {
+        return (int) (ActivityJigsawGame.dimensionPercentage * ActivityJigsawGame.pieceDimension);
+    }
+
+    public int getContentWidth() {
+        return this.getContentHeight();
+    }
+
+    public void setTraslation(float translationX, float translationY) {
+        this.getView().setTranslationX(translationX - this.leftOffset);
+        this.getView().setTranslationY(translationY - this.topOffset);
+    }
+
+    public float getContentTranslationX() {
+        return this.getView().getTranslationX() + this.leftOffset;
+    }
+
+    public float getContentTranslationY() {
+        return this.getView().getTranslationY() + this.topOffset;
+    }
+
+
+    public boolean isTouchedBy(float x, float y) {
+        ImageView view = this.getView();
+        float left = view.getTranslationX();
+        float right = left + this.getWidth();
+        float top = view.getTranslationY();
+        float bottom = top + this.getHeight();
+
+        RectF rect = new RectF(left, top, right, bottom);
+        if (rect.contains(x, y) == false) {
+            return false;
+        }
+
+        x -= left;
+        y -= top;
+
+        if (this.pieceBitmap.getPixel((int)x, (int)y) == Color.TRANSPARENT) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isToTheRight(JigsawPiece other) {
+        if (this.getI() != other.getI()) {
+            return false;
+        }
+
+        if (this.getJ() + 1 != other.getJ()) {
+            return false;
+        }
+
+        if (ActivityJigsawGame.positionsAreCloseEnough(this.getContentTranslationY(), other.getContentTranslationY()) == false) {
+            return false;
+        }
+
+        if (ActivityJigsawGame.positionsAreCloseEnough(this.getContentTranslationX() + ActivityJigsawGame.pieceDimension, other.getContentTranslationX()) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean isDownwards(JigsawPiece other) {
+        if (this.getJ() != other.getJ()) {
+            return false;
+        }
+
+        if (this.getI() + 1 != other.getI()) {
+            return false;
+        }
+
+        if (ActivityJigsawGame.positionsAreCloseEnough(this.getContentTranslationX(), other.getContentTranslationX()) == false) {
+            return false;
+        }
+
+        if (ActivityJigsawGame.positionsAreCloseEnough(this.getContentTranslationY() + ActivityJigsawGame.pieceDimension, other.getContentTranslationY()) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public boolean connectsWith(JigsawPiece other) {
+        if (this.isToTheRight(other) || other.isToTheRight(this)) {
+            return true;
+        }
+        if (this.isDownwards(other) || other.isDownwards(this)) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+
+
+
+
+
+
+
+
     // static code
     public static final int TOP = 0;
     public static final int RIGHT = 1;
@@ -153,75 +324,6 @@ public class JigsawPiece {
         innerNiches[LEFT] = JigsawPiece.invertNiche(outerNiches[RIGHT]);
     }
 
-
-
-
-    // instance code;
-    protected int i, j, leftOffset, topOffset;
-    protected JigsawPieceGroup group;
-    protected ImageView view;
-    private Bitmap pieceMask;
-    private Bitmap pieceBitmap;
-
-    public int getI() {
-        return i;
-    }
-
-    public void setI(int i) {
-        this.i = i;
-    }
-
-    public int getJ() {
-        return j;
-    }
-
-    public void setJ(int j) {
-        this.j = j;
-    }
-
-    public int getLeftOffset() {
-        return leftOffset;
-    }
-
-    public void setLeftOffset(int leftOffset) {
-        this.leftOffset = leftOffset;
-    }
-
-    public int getTopOffset() {
-        return topOffset;
-    }
-
-    public void setTopOffset(int topOffset) {
-        this.topOffset = topOffset;
-    }
-
-    public ImageView getView() {
-        return view;
-    }
-
-    public JigsawPieceGroup getGroup() {
-        return group;
-    }
-
-    public void setGroup(JigsawPieceGroup group) {
-        this.group = group;
-    }
-
-    public int getHeight() {
-        if (this.pieceBitmap == null) {
-            return 0;
-        }
-
-        return this.pieceBitmap.getHeight();
-    }
-
-    public int getWidth() {
-        if (this.pieceBitmap == null) {
-            return 0;
-        }
-
-        return this.pieceBitmap.getWidth();
-    }
 
 
 
@@ -490,31 +592,5 @@ public class JigsawPiece {
         piece.setRandomPosition(centerRect);
 
         return piece;
-    }
-
-    public boolean isTouchedBy(float x, float y) {
-        ImageView view = this.getView();
-        float left = view.getTranslationX();
-        float right = left + this.getWidth();
-        float top = view.getTranslationY();
-        float bottom = top + this.getHeight();
-
-        RectF rect = new RectF(left, top, right, bottom);
-        if (rect.contains(x, y) == false) {
-            return false;
-        }
-
-        x -= left;
-        y -= top;
-
-        if (this.pieceBitmap.getPixel((int)x, (int)y) == Color.TRANSPARENT) {
-            return false;
-        }
-        return true;
-    }
-
-    public void setTraslation(float translationX, float translationY) {
-        this.getView().setTranslationX(translationX - this.leftOffset);
-        this.getView().setTranslationY(translationY - this.topOffset);
     }
 }

@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -20,6 +21,7 @@ import com.example.puzzle.jigsaw.JigsawPieceGroup;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
 
@@ -33,11 +35,15 @@ public class ActivityJigsawGame extends AppCompatActivity {
 
     public RelativeLayout topLayout = null;
     public int initialHeightMargin = 0, initialWidthMargin = 0;
+    public Bitmap imageBitmap = null;
 
     public int imageId = -1, smallImageId = -1;
     public int numVertical = -1, numHorizontal = -1;
-    public int pieceDimension;
-    public Bitmap imageBitmap = null;
+    public static int pieceDimension;
+
+    public static int piecePositionError;
+    public static double dimensionPercentage = 1.0;
+    public static final double percentageAdd = 0.2;
 
     public JigsawPiece.NICHE_STATE[][] rightMargin, bottomMargin;
     public LinkedList<JigsawPieceGroup> pieceGroupList = new LinkedList<>();
@@ -127,6 +133,12 @@ public class ActivityJigsawGame extends AppCompatActivity {
         int wantedPieceHeight = (this.getContainerHeight() - 2 * this.initialHeightMargin) / this.numVertical;
         int wantedPieceWidth = (this.getContainerWidth() - 2 * this.initialWidthMargin) / this.numHorizontal;
         this.pieceDimension = Math.min(wantedPieceHeight, wantedPieceWidth);
+        this.piecePositionError = (int)Math.max((float)30, (float)pieceDimension / 4);
+
+
+        Log.i(ActivityJigsawGame.TAG, "pieceDimension = " + ActivityJigsawGame.pieceDimension);
+        Log.i(ActivityJigsawGame.TAG, "piecePositionError = " + ActivityJigsawGame.piecePositionError);
+        Log.i(ActivityJigsawGame.TAG, ActivityMain.SEPARATOR);
 
 
         this.startTimeInMilliseconds = Calendar.getInstance().getTimeInMillis();
@@ -282,6 +294,19 @@ public class ActivityJigsawGame extends AppCompatActivity {
             float xDiff = eventX - this.lastEventX;
             float yDiff = eventY - this.lastEventY;
             this.touchedGroup.setTranslationByDifference(xDiff, yDiff);
+
+            List<JigsawPieceGroup> groupsToAdd = new LinkedList<JigsawPieceGroup>();
+            ListIterator<JigsawPieceGroup> it = this.pieceGroupList.listIterator();
+            while (it.hasNext()) {
+                JigsawPieceGroup otherGroup = it.next();
+
+                if (this.touchedGroup.intersect(otherGroup)) {
+                    groupsToAdd.add(otherGroup);
+                    it.remove();
+                }
+            }
+            this.touchedGroup.addGroups(groupsToAdd);
+
             this.pieceGroupList.addFirst(this.touchedGroup);
             this.touchedGroup = null;
         }
@@ -302,6 +327,30 @@ public class ActivityJigsawGame extends AppCompatActivity {
         int ret = random.nextInt(upper - lower + 1) + lower;
         return ret;
     }
+
+
+
+    public static boolean positionsAreCloseEnough(float a, float b) {
+        if (a - piecePositionError <= b && b <= a + piecePositionError) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean intersects(int a, int b, int x, int y) {
+        return Math.max(a, x) <= Math.min(b, y);
+    }
+
+    public static boolean intersects(Rect a, Rect b) {
+        boolean result = true;
+        result = result && intersects(a.left, a.right, b.left, b.right);
+        result = result && intersects(a.top, a.bottom, b.top, b.bottom);
+
+        return result;
+    }
+
+
 
     public static void setImageBackground(ImageView image, Bitmap background, Context context) {
         int sdk = android.os.Build.VERSION.SDK_INT;
@@ -332,4 +381,42 @@ public class ActivityJigsawGame extends AppCompatActivity {
         layout.requestLayout();
     }
 
+
+
+    // ZOOMING IS NOT FUNCTIONAL
+
+    public boolean pieceDimensionIsOk(double newPercentage) {
+        int dimension = (int) (newPercentage * pieceDimension);
+        Log.i(ActivityJigsawGame.TAG, "trying to resize to dimension: " + dimension);
+        return 30 <= dimension && dimension <= 0.6 * Math.min(this.getContainerHeight(), this.getContainerWidth());
+    }
+
+    public void resizePieces() {
+        for (JigsawPieceGroup group : this.pieceGroupList) {
+            for (JigsawPiece piece : group.getPieceList()) {
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) piece.getView().getLayoutParams();
+                params.width = (int) (dimensionPercentage * params.width);
+                params.height = (int) (dimensionPercentage * params.height);
+            }
+        }
+
+        this.topLayout.requestLayout();
+    }
+
+    public void zoomTo(double newDimensionPercentage) {
+        if (this.pieceDimensionIsOk(newDimensionPercentage)) {
+            dimensionPercentage = newDimensionPercentage;
+            this.resizePieces();
+        }
+
+        Log.i(ActivityJigsawGame.TAG, "dimensionPercentage = " + dimensionPercentage);
+    }
+
+    public void zoomIn(View view) {
+//        this.zoomTo(dimensionPercentage + percentageAdd);
+    }
+
+    public void zoomOut(View view) {
+//        this.zoomTo(dimensionPercentage - percentageAdd);
+    }
 }
