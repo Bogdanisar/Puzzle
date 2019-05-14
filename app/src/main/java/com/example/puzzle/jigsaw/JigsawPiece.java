@@ -1,6 +1,5 @@
 package com.example.puzzle.jigsaw;
 
-import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -9,25 +8,28 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.example.puzzle.ActivityJigsawGame;
-import com.example.puzzle.ActivityMain;
 
-import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.Random;
 
 public class JigsawPiece {
 
     // instance code;
-    protected int i, j, leftOffset, topOffset;
+    protected ActivityJigsawGame context;
+    protected int i, j;
     protected JigsawPieceGroup group;
     protected ImageView view;
+    protected boolean[] outerNichePresence;
     private Bitmap pieceMask;
     private Bitmap pieceBitmap;
+
+
+    public ActivityJigsawGame getContext() {
+        return context;
+    }
 
     public int getI() {
         return i;
@@ -46,19 +48,17 @@ public class JigsawPiece {
     }
 
     public int getLeftOffset() {
-        return leftOffset;
-    }
-
-    public void setLeftOffset(int leftOffset) {
-        this.leftOffset = leftOffset;
+        if (this.outerNichePresence[LEFT]) {
+            return this.context.getNicheHeightDimension();
+        }
+        return 0;
     }
 
     public int getTopOffset() {
-        return topOffset;
-    }
-
-    public void setTopOffset(int topOffset) {
-        this.topOffset = topOffset;
+        if (this.outerNichePresence[TOP]) {
+            return this.context.getNicheHeightDimension();
+        }
+        return 0;
     }
 
     public ImageView getView() {
@@ -73,50 +73,69 @@ public class JigsawPiece {
         this.group = group;
     }
 
-    public int getHeight() {
-        if (this.pieceBitmap == null) {
-            return 0;
+    public int getTotalHeight() {
+        int ans = this.context.getPieceDimension();
+        if (this.outerNichePresence[TOP]) {
+            ans += this.context.getNicheHeightDimension();
         }
 
-        return (int) (ActivityJigsawGame.dimensionPercentage *  this.pieceBitmap.getHeight());
+        if (this.outerNichePresence[BOTTOM]) {
+            ans += this.context.getNicheHeightDimension();
+        }
+
+        return ans;
     }
 
-    public int getWidth() {
-        if (this.pieceBitmap == null) {
-            return 0;
+    public int getTotalWidth() {
+        int ans = this.context.getPieceDimension();
+        if (this.outerNichePresence[LEFT]) {
+            ans += this.context.getNicheHeightDimension();
         }
 
-        return (int) (ActivityJigsawGame.dimensionPercentage *  this.pieceBitmap.getWidth());
+        if (this.outerNichePresence[RIGHT]) {
+            ans += this.context.getNicheHeightDimension();
+        }
+
+        return ans;
     }
 
     public int getContentHeight() {
-        return (int) (ActivityJigsawGame.dimensionPercentage * ActivityJigsawGame.pieceDimension);
+        return this.context.getPieceDimension();
     }
 
     public int getContentWidth() {
-        return this.getContentHeight();
+        return this.context.getPieceDimension();
     }
 
     public void setTraslation(float translationX, float translationY) {
-        this.getView().setTranslationX(translationX - this.leftOffset);
-        this.getView().setTranslationY(translationY - this.topOffset);
+        this.getView().setTranslationX(translationX - this.getLeftOffset());
+        this.getView().setTranslationY(translationY - this.getTopOffset());
     }
 
     public float getContentTranslationX() {
-        return this.getView().getTranslationX() + this.leftOffset;
+        return this.getView().getTranslationX() + this.getLeftOffset();
     }
 
     public float getContentTranslationY() {
-        return this.getView().getTranslationY() + this.topOffset;
+        return this.getView().getTranslationY() + this.getTopOffset();
     }
+
+    JigsawPiece(ActivityJigsawGame context) {
+        this.context = context;
+        this.outerNichePresence = new boolean[4];
+    }
+
+
+
+
 
 
     public boolean isTouchedBy(float x, float y) {
         ImageView view = this.getView();
         float left = view.getTranslationX();
-        float right = left + this.getWidth();
+        float right = left + this.getTotalWidth() - 1;
         float top = view.getTranslationY();
-        float bottom = top + this.getHeight();
+        float bottom = top + this.getTotalHeight() - 1;
 
         RectF rect = new RectF(left, top, right, bottom);
         if (rect.contains(x, y) == false) {
@@ -125,6 +144,11 @@ public class JigsawPiece {
 
         x -= left;
         y -= top;
+
+        // bring a point from [0, actualImageDimension) to [0, bitmapDimension)
+        // so you don't have to resize the bitmap
+        x = x * this.pieceBitmap.getWidth() / this.getTotalWidth();
+        y = y * this.pieceBitmap.getHeight() / this.getTotalHeight();
 
         if (this.pieceBitmap.getPixel((int)x, (int)y) == Color.TRANSPARENT) {
             return false;
@@ -141,11 +165,11 @@ public class JigsawPiece {
             return false;
         }
 
-        if (ActivityJigsawGame.positionsAreCloseEnough(this.getContentTranslationY(), other.getContentTranslationY()) == false) {
+        if (this.context.positionsAreCloseEnough(this.getContentTranslationY(), other.getContentTranslationY()) == false) {
             return false;
         }
 
-        if (ActivityJigsawGame.positionsAreCloseEnough(this.getContentTranslationX() + ActivityJigsawGame.pieceDimension, other.getContentTranslationX()) == false) {
+        if (this.context.positionsAreCloseEnough(this.getContentTranslationX() + this.context.getPieceDimension(), other.getContentTranslationX()) == false) {
             return false;
         }
 
@@ -161,11 +185,11 @@ public class JigsawPiece {
             return false;
         }
 
-        if (ActivityJigsawGame.positionsAreCloseEnough(this.getContentTranslationX(), other.getContentTranslationX()) == false) {
+        if (this.context.positionsAreCloseEnough(this.getContentTranslationX(), other.getContentTranslationX()) == false) {
             return false;
         }
 
-        if (ActivityJigsawGame.positionsAreCloseEnough(this.getContentTranslationY() + ActivityJigsawGame.pieceDimension, other.getContentTranslationY()) == false) {
+        if (this.context.positionsAreCloseEnough(this.getContentTranslationY() + this.context.getPieceDimension(), other.getContentTranslationY()) == false) {
             return false;
         }
 
@@ -223,9 +247,9 @@ public class JigsawPiece {
         return NICHE_STATE.NONE;
     }
 
-    public static void setNicheDimensions(int nicheWidth) {
+    public static void setNicheDimensions(int nicheHeight, int nicheWidth) {
         NICHE_WIDTH = nicheWidth;
-        NICHE_HEIGHT = NICHE_WIDTH / 3;
+        NICHE_HEIGHT = nicheHeight;
     }
 
     public static Bitmap rotateBitmap(Bitmap bitmap, float angle) {
@@ -254,8 +278,8 @@ public class JigsawPiece {
         return niche;
     }
 
-    public static void buildNiches(int pieceDimension) {
-        JigsawPiece.setNicheDimensions(pieceDimension);
+    public static void buildNiches(int nicheHeightDimension, int nicheWidthDimension) {
+        JigsawPiece.setNicheDimensions(nicheHeightDimension, nicheWidthDimension);
 
         Paint paint = new Paint();
         paint.setColor(FOREGROUND_COLOR);
@@ -357,66 +381,46 @@ public class JigsawPiece {
     }
 
     private void setMaskAndOffsets(NICHE_STATE[] state) {
-        this.leftOffset = 0;
-        this.topOffset = 0;
-
-        int contentWidth = NICHE_WIDTH;
-        int contentHeight = NICHE_WIDTH;
-        int totalWidth = contentWidth;
-        int totalHeight = contentHeight;
-
-        if (state[TOP] == NICHE_STATE.OUTER) {
-            this.topOffset += NICHE_HEIGHT;
-            totalHeight += NICHE_HEIGHT;
-        }
-        if (state[LEFT] == NICHE_STATE.OUTER) {
-            this.leftOffset += NICHE_HEIGHT;
-            totalWidth += NICHE_HEIGHT;
-        }
-
-        if (state[BOTTOM] == NICHE_STATE.OUTER) {
-            totalHeight += NICHE_HEIGHT;
-        }
-        if (state[RIGHT] == NICHE_STATE.OUTER) {
-            totalWidth += NICHE_HEIGHT;
+        for (int i = 0; i < 4; ++i) {
+            this.outerNichePresence[i] = (state[i] == NICHE_STATE.OUTER);
         }
 
 
         Paint foreground_paint = new Paint();
         foreground_paint.setColor(FOREGROUND_COLOR);
 
-        this.pieceMask = Bitmap.createBitmap(totalWidth, totalHeight, Bitmap.Config.ARGB_8888);
+        this.pieceMask = Bitmap.createBitmap(this.getTotalWidth(), this.getTotalHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(this.pieceMask);
         canvas.drawColor(BACKGROUND_COLOR);
 
-        canvas.drawRect(new Rect(this.leftOffset, this.topOffset, this.leftOffset + contentWidth, this.topOffset + contentWidth), foreground_paint);
+        canvas.drawRect(new Rect(this.getLeftOffset(), this.getTopOffset(), this.getLeftOffset() + this.getContentWidth(), this.getTopOffset() + this.getContentWidth()), foreground_paint);
 
         if (state[TOP] == NICHE_STATE.OUTER) {
-            canvas.drawBitmap(outerNiches[TOP], this.leftOffset, 0, null);
+            canvas.drawBitmap(outerNiches[TOP], this.getLeftOffset(), 0, null);
         }
         else if (state[TOP] == NICHE_STATE.INNER) {
-            canvas.drawBitmap(innerNiches[TOP], this.leftOffset, 0, null);
+            canvas.drawBitmap(innerNiches[TOP], this.getLeftOffset(), 0, null);
         }
 
         if (state[LEFT] == NICHE_STATE.OUTER) {
-            canvas.drawBitmap(outerNiches[LEFT], 0, this.topOffset, null);
+            canvas.drawBitmap(outerNiches[LEFT], 0, this.getTopOffset(), null);
         }
         else if (state[LEFT] == NICHE_STATE.INNER) {
-            canvas.drawBitmap(innerNiches[LEFT], 0, this.topOffset, null);
+            canvas.drawBitmap(innerNiches[LEFT], 0, this.getTopOffset(), null);
         }
 
         if (state[BOTTOM] == NICHE_STATE.OUTER) {
-            canvas.drawBitmap(outerNiches[BOTTOM], this.leftOffset, this.topOffset + contentHeight, null);
+            canvas.drawBitmap(outerNiches[BOTTOM], this.getLeftOffset(), this.getTopOffset() + this.getContentHeight(), null);
         }
         else if (state[BOTTOM] == NICHE_STATE.INNER) {
-            canvas.drawBitmap(innerNiches[BOTTOM], this.leftOffset, this.topOffset + contentHeight - NICHE_HEIGHT, null);
+            canvas.drawBitmap(innerNiches[BOTTOM], this.getLeftOffset(), this.getTopOffset() + this.getContentHeight() - NICHE_HEIGHT, null);
         }
 
         if (state[RIGHT] == NICHE_STATE.OUTER) {
-            canvas.drawBitmap(outerNiches[RIGHT], this.leftOffset + contentWidth, this.topOffset, null);
+            canvas.drawBitmap(outerNiches[RIGHT], this.getLeftOffset() + this.getContentWidth(), this.getTopOffset(), null);
         }
         else if (state[RIGHT] == NICHE_STATE.INNER) {
-            canvas.drawBitmap(innerNiches[RIGHT], this.leftOffset + contentWidth - NICHE_HEIGHT, this.topOffset, null);
+            canvas.drawBitmap(innerNiches[RIGHT], this.getLeftOffset() + this.getContentWidth() - NICHE_HEIGHT, this.getTopOffset(), null);
         }
     }
 
@@ -512,7 +516,7 @@ public class JigsawPiece {
     }
 
     private void setView(Bitmap wholeImage, ActivityJigsawGame game) {
-        int pieceDimension = game.pieceDimension;
+        int pieceDimension = game.getPieceDimension();
         int numHorizontal = game.numHorizontal;
         int numVertical = game.numVertical;
         int left = this.j * pieceDimension, top = i * pieceDimension;
@@ -561,8 +565,8 @@ public class JigsawPiece {
     }
 
     private void setRandomPosition(Rect centerRect) {
-        int minX = centerRect.left, maxX = centerRect.right - this.getWidth();
-        int minY = centerRect.top, maxY = centerRect.bottom - this.getHeight();
+        int minX = centerRect.left, maxX = centerRect.right - this.getTotalWidth();
+        int minY = centerRect.top, maxY = centerRect.bottom - this.getTotalHeight();
 
         int x = ActivityJigsawGame.getRandomInt(minX, maxX);
         int y = ActivityJigsawGame.getRandomInt(minY, maxY);
@@ -581,7 +585,7 @@ public class JigsawPiece {
         NICHE_STATE[][] rightMargin = game.rightMargin;
         NICHE_STATE[][] bottomMargin = game.bottomMargin;
 
-        JigsawPiece piece = new JigsawPiece();
+        JigsawPiece piece = new JigsawPiece(game);
         piece.setI(i);
         piece.setJ(j);
         piece.setGroup(null);

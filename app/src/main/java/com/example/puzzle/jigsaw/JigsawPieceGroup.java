@@ -1,6 +1,7 @@
 package com.example.puzzle.jigsaw;
 
 import android.graphics.Rect;
+import android.support.v7.view.menu.ActionMenuItem;
 
 import com.example.puzzle.ActivityJigsawGame;
 
@@ -8,9 +9,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class JigsawPieceGroup {
+    private ActivityJigsawGame context;
     private LinkedList<JigsawPiece> pieceList;
     private int minI, maxI, minJ, maxJ;
     private float translationX, translationY;
+
+    public ActivityJigsawGame getContext() {
+        return context;
+    }
 
     public int getMinI() {
         return minI;
@@ -82,13 +88,14 @@ public class JigsawPieceGroup {
 
 
 
-    public JigsawPieceGroup(JigsawPiece piece) {
+    public JigsawPieceGroup(ActivityJigsawGame context, JigsawPiece piece) {
+        this.context = context;
         this.setMinI(piece.getI());
         this.setMaxI(piece.getI());
         this.setMinJ(piece.getJ());
         this.setMaxJ(piece.getJ());
-        this.translationX = piece.getView().getTranslationX() + piece.leftOffset;
-        this.translationY = piece.getView().getTranslationY() + piece.topOffset;
+        this.translationX = piece.getView().getTranslationX() + piece.getLeftOffset();
+        this.translationY = piece.getView().getTranslationY() + piece.getTopOffset();
 
         this.pieceList = new LinkedList<>();
         this.pieceList.add(piece);
@@ -144,8 +151,8 @@ public class JigsawPieceGroup {
         int iDiff = oldMinI - this.getMinI();
         int jDiff = oldMinJ - this.getMinJ();
 
-        float newTranslationX = this.getTranslationX() - jDiff * ActivityJigsawGame.pieceDimension;
-        float newTranslationY = this.getTranslationY() - iDiff * ActivityJigsawGame.pieceDimension;
+        float newTranslationX = this.getTranslationX() - jDiff * this.context.getPieceDimension();
+        float newTranslationY = this.getTranslationY() - iDiff * this.context.getPieceDimension();
         this.setTranslation(newTranslationX, newTranslationY);
     }
 
