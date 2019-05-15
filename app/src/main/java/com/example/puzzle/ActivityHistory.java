@@ -1,6 +1,5 @@
 package com.example.puzzle;
 
-import android.app.ActivityManager;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -10,9 +9,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.example.puzzle.history.HistoryItem;
-import com.example.puzzle.history.SquareGameHistory;
+import com.example.puzzle.history.PieceGameHistory;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,8 +18,8 @@ import java.util.List;
 public class ActivityHistory extends AppCompatActivity {
     public static String TAG = ActivityMain.COMMON_TAG + "_ActivityHistory";
 
-    private List<SquareGameHistory> getHistoryItems(String key, SharedPreferences preferences) {
-        return SquareGameHistory.getInstanceArray(preferences.getString(key, ""));
+    private List<PieceGameHistory> getHistoryItems(String key, SharedPreferences preferences) {
+        return PieceGameHistory.getInstanceArray(preferences.getString(key, ""));
     }
 
     @Override

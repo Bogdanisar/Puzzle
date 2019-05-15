@@ -9,13 +9,12 @@ import android.widget.TextView;
 import com.example.puzzle.R;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-public class SquareGameHistory extends HistoryItem {
+public class PieceGameHistory extends HistoryItem {
     static public String fieldSeparator = "&";
     static public String keyValueSeparator = "=";
 
@@ -25,7 +24,7 @@ public class SquareGameHistory extends HistoryItem {
     private Long durationInMilliseconds;
     private Integer numHorizontal, numVertical;
 
-    public SquareGameHistory(String gamemode, long startTimeInMilliseconds, int imageId, long durationInMilliseconds, int numHorizontal, int numVertical) {
+    public PieceGameHistory(String gamemode, long startTimeInMilliseconds, int imageId, long durationInMilliseconds, int numHorizontal, int numVertical) {
         if ("".equals(gamemode)) {
             gamemode = null;
         }
@@ -64,14 +63,14 @@ public class SquareGameHistory extends HistoryItem {
         return numVertical;
     }
 
-    public static SquareGameHistory getInstance(String data) {
+    public static PieceGameHistory getInstance(String data) {
         String gamemode = "";
         Long startTimeInSeconds = 0L, durationInMilliseconds = 0L;
         Integer imageId = 0, numHorizontal = 0, numVertical = 0;
 
-        for (String field : data.split(SquareGameHistory.fieldSeparator)) {
+        for (String field : data.split(PieceGameHistory.fieldSeparator)) {
             String fieldKey, fieldValue;
-            String[] keyValue = field.split(SquareGameHistory.keyValueSeparator);
+            String[] keyValue = field.split(PieceGameHistory.keyValueSeparator);
 
             fieldKey = keyValue[0];
             if (fieldKey.equals("gamemode")) {
@@ -103,7 +102,7 @@ public class SquareGameHistory extends HistoryItem {
             }
         }
 
-        return new SquareGameHistory(gamemode, startTimeInSeconds, imageId, durationInMilliseconds, numHorizontal, numVertical);
+        return new PieceGameHistory(gamemode, startTimeInSeconds, imageId, durationInMilliseconds, numHorizontal, numVertical);
     }
 
     public String toString() {
@@ -113,27 +112,27 @@ public class SquareGameHistory extends HistoryItem {
         if (this.gamemode != null) {
             add = this.gamemode;
         }
-        result += "gamemode" + SquareGameHistory.keyValueSeparator + add + SquareGameHistory.fieldSeparator;
+        result += "gamemode" + PieceGameHistory.keyValueSeparator + add + PieceGameHistory.fieldSeparator;
 
-        result += "startTimeInMilliseconds" + SquareGameHistory.keyValueSeparator + this.startTimeInMilliseconds + SquareGameHistory.fieldSeparator;
-        result += "durationInMilliseconds" + SquareGameHistory.keyValueSeparator + this.durationInMilliseconds + SquareGameHistory.fieldSeparator;
-        result += "imageId" + SquareGameHistory.keyValueSeparator + this.imageId + SquareGameHistory.fieldSeparator;
-        result += "numHorizontal" + SquareGameHistory.keyValueSeparator + this.numHorizontal + SquareGameHistory.fieldSeparator;
-        result += "numVertical" + SquareGameHistory.keyValueSeparator + this.numVertical + SquareGameHistory.fieldSeparator;
+        result += "startTimeInMilliseconds" + PieceGameHistory.keyValueSeparator + this.startTimeInMilliseconds + PieceGameHistory.fieldSeparator;
+        result += "durationInMilliseconds" + PieceGameHistory.keyValueSeparator + this.durationInMilliseconds + PieceGameHistory.fieldSeparator;
+        result += "imageId" + PieceGameHistory.keyValueSeparator + this.imageId + PieceGameHistory.fieldSeparator;
+        result += "numHorizontal" + PieceGameHistory.keyValueSeparator + this.numHorizontal + PieceGameHistory.fieldSeparator;
+        result += "numVertical" + PieceGameHistory.keyValueSeparator + this.numVertical + PieceGameHistory.fieldSeparator;
 
         return result;
     }
 
 
-    public static List<SquareGameHistory> getInstanceArray(String data) {
-        List<SquareGameHistory> ret = new LinkedList<>();
+    public static List<PieceGameHistory> getInstanceArray(String data) {
+        List<PieceGameHistory> ret = new LinkedList<>();
 
         if (data == null || data.length() == 0) {
             return ret;
         }
 
         for (String itemData : data.split(HistoryItem.itemSeparator)) {
-            SquareGameHistory item = SquareGameHistory.getInstance(itemData);
+            PieceGameHistory item = PieceGameHistory.getInstance(itemData);
             ret.add(item);
         }
 
@@ -142,10 +141,10 @@ public class SquareGameHistory extends HistoryItem {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof SquareGameHistory == false) {
+        if (obj instanceof PieceGameHistory == false) {
             return false;
         }
-        SquareGameHistory other = (SquareGameHistory) obj;
+        PieceGameHistory other = (PieceGameHistory) obj;
 
         if (this.gamemode != null && this.gamemode.equals(other.gamemode) == false) {
             return false;

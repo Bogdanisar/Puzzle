@@ -19,7 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.puzzle.history.HistoryItem;
-import com.example.puzzle.history.SquareGameHistory;
+import com.example.puzzle.history.PieceGameHistory;
 import com.example.puzzle.jigsaw.JigsawPiece;
 import com.example.puzzle.jigsaw.JigsawPieceGroup;
 
@@ -240,7 +240,7 @@ public class ActivityJigsawGame extends AppCompatActivity {
 
         Long endTimeInMilliseconds = Calendar.getInstance().getTimeInMillis();
 
-        SquareGameHistory item = new SquareGameHistory(
+        PieceGameHistory item = new PieceGameHistory(
                 "Jigsaw",
                 this.startTimeInMilliseconds,
                 this.smallImageId,
