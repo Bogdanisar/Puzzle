@@ -1,12 +1,14 @@
 package com.example.puzzle;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,7 +16,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.example.puzzle.history.HistoryItem;
+import com.example.puzzle.history.SquareGameHistory;
 import com.example.puzzle.jigsaw.JigsawPiece;
 import com.example.puzzle.jigsaw.JigsawPieceGroup;
 
@@ -26,10 +31,10 @@ import java.util.ListIterator;
 import java.util.Random;
 
 import static java.lang.Float.NaN;
-import static java.lang.Float.isNaN;
 
 public class ActivityJigsawGame extends AppCompatActivity {
     public static final String TAG = ActivityMain.COMMON_TAG + "_JigsawGame";
+    public static final String HISTORY_PREFERENCE_KEY = "JigsawGameHistory";
 
     public final double initialMarginPercent = 0.05;
     public final int maxImageWidth = 1000, maxImageHeight = 1000;
@@ -40,6 +45,7 @@ public class ActivityJigsawGame extends AppCompatActivity {
 
     public int imageId = -1, smallImageId = -1;
     public int numVertical = -1, numHorizontal = -1;
+    public int numClusters = -1;
 
     public int nicheHeightDimension = 0;
     public final int nicheWidthMultiplier = 3;
@@ -121,6 +127,8 @@ public class ActivityJigsawGame extends AppCompatActivity {
         this.generateBorderMatrices();
         this.generatePieces();
 
+        this.updateText();
+
         Log.i(ActivityJigsawGame.TAG, "containerWidth =" + this.getContainerWidth());
         Log.i(ActivityJigsawGame.TAG, "containerHeight =" + this.getContainerHeight());
 
@@ -135,6 +143,7 @@ public class ActivityJigsawGame extends AppCompatActivity {
         this.smallImageId = (Integer)bundle.get("smallImageSelected");
         this.numVertical = (Integer)bundle.get("rowNumber");
         this.numHorizontal = (Integer)bundle.get("columnNumber");
+        this.numClusters = this.numHorizontal * this.numVertical;
 
 
         this.initialHeightMargin = (int)(this.getContainerHeight() * initialMarginPercent);
@@ -225,6 +234,44 @@ public class ActivityJigsawGame extends AppCompatActivity {
     }
 
 
+    private void updateHistory() {
+        SharedPreferences shared = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = shared.edit();
+
+        Long endTimeInMilliseconds = Calendar.getInstance().getTimeInMillis();
+
+        SquareGameHistory item = new SquareGameHistory(
+                "Jigsaw",
+                this.startTimeInMilliseconds,
+                this.smallImageId,
+                endTimeInMilliseconds - this.startTimeInMilliseconds,
+                this.numHorizontal,
+                this.numVertical
+        );
+
+        String key = ActivityJigsawGame.HISTORY_PREFERENCE_KEY;
+        String data = shared.getString(key, null);
+        data = HistoryItem.addInstanceToDataString(data, item);
+        editor.putString(key, data);
+        editor.commit();
+    }
+
+    private void updateText() {
+        TextView textView = findViewById(R.id.TopGameMenu_Text);
+        String text;
+
+        if (this.numClusters == 1) {
+            text = this.getResources().getString(R.string.TopGameMenu_WonText);
+//            this.updateHistory();
+        }
+        else {
+            text = this.numClusters + " clusters";
+        }
+
+        textView.setText(text);
+        textView.requestLayout();
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         boolean result = this.dealWithMotionEvent(event);
@@ -311,11 +358,15 @@ public class ActivityJigsawGame extends AppCompatActivity {
                 JigsawPieceGroup otherGroup = it.next();
 
                 if (this.touchedGroup.intersect(otherGroup)) {
+                    --this.numClusters;
                     groupsToAdd.add(otherGroup);
                     it.remove();
                 }
             }
             this.touchedGroup.addGroups(groupsToAdd);
+            if (groupsToAdd.size() != 0) {
+                this.updateText();
+            }
 
             this.pieceGroupList.addFirst(this.touchedGroup);
             this.touchedGroup = null;

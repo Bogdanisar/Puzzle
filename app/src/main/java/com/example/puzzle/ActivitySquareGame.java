@@ -27,7 +27,7 @@ import java.util.Random;
 
 public class ActivitySquareGame extends AppCompatActivity {
     public static String TAG = ActivityMain.COMMON_TAG;
-    public static String HISTORY_PREFERENCE_KEY = "SquareGameHistory";
+    public static final String HISTORY_PREFERENCE_KEY = "SquareGameHistory";
 
     static int imageId = 0;
     static int smallImageId = 0;
@@ -265,7 +265,7 @@ public class ActivitySquareGame extends AppCompatActivity {
     }
 
     private void updateText() {
-        TextView textView = findViewById(R.id.menuGameText);
+        TextView textView = findViewById(R.id.TopGameMenu_Text);
         String text;
 
         ++this.numPlacedPieces;

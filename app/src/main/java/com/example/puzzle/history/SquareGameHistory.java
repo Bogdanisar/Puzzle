@@ -12,6 +12,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 public class SquareGameHistory extends HistoryItem {
     static public String fieldSeparator = "&";
@@ -122,6 +124,7 @@ public class SquareGameHistory extends HistoryItem {
         return result;
     }
 
+
     public static SquareGameHistory[] getInstanceArray(String data) {
         if (data == null || data.length() == 0) {
             return new SquareGameHistory[0];
@@ -141,6 +144,24 @@ public class SquareGameHistory extends HistoryItem {
 
         return ret;
     }
+
+
+//    public static List<SquareGameHistory> getInstanceArray(String data) {
+//        List<SquareGameHistory> ret = new LinkedList<>();
+//
+//        if (data == null || data.length() == 0) {
+//            return ret;
+//        }
+//
+//        ArrayList<SquareGameHistory> list = new ArrayList<>();
+//
+//        for (String itemData : data.split(HistoryItem.itemSeparator)) {
+//            SquareGameHistory item = SquareGameHistory.getInstance(itemData);
+//            list.add(item);
+//        }
+//
+//        return ret;
+//    }
 
     @Override
     public boolean equals(Object obj) {
