@@ -262,7 +262,7 @@ public class ActivityJigsawGame extends AppCompatActivity {
 
         if (this.numClusters == 1) {
             text = this.getResources().getString(R.string.TopGameMenu_WonText);
-//            this.updateHistory();
+            this.updateHistory();
         }
         else {
             text = this.numClusters + " clusters";

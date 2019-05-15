@@ -249,7 +249,7 @@ public class ActivitySquareGame extends AppCompatActivity {
         Long endTimeInMilliseconds = Calendar.getInstance().getTimeInMillis();
 
         SquareGameHistory item = new SquareGameHistory(
-                this.gamemodeString,
+                "SquareGame - " + this.gamemodeString,
                 ActivitySquareGame.startTimeInMilliseconds,
                 ActivitySquareGame.smallImageId,
                 endTimeInMilliseconds - ActivitySquareGame.startTimeInMilliseconds,

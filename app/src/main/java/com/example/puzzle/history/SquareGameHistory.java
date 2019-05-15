@@ -125,43 +125,20 @@ public class SquareGameHistory extends HistoryItem {
     }
 
 
-    public static SquareGameHistory[] getInstanceArray(String data) {
-        if (data == null || data.length() == 0) {
-            return new SquareGameHistory[0];
-        }
+    public static List<SquareGameHistory> getInstanceArray(String data) {
+        List<SquareGameHistory> ret = new LinkedList<>();
 
-        ArrayList<SquareGameHistory> list = new ArrayList<>();
+        if (data == null || data.length() == 0) {
+            return ret;
+        }
 
         for (String itemData : data.split(HistoryItem.itemSeparator)) {
             SquareGameHistory item = SquareGameHistory.getInstance(itemData);
-            list.add(item);
-        }
-
-        SquareGameHistory[] ret = new SquareGameHistory[list.size()];
-        for (int i = 0; i < ret.length; ++i) {
-            ret[i] = list.get(i);
+            ret.add(item);
         }
 
         return ret;
     }
-
-
-//    public static List<SquareGameHistory> getInstanceArray(String data) {
-//        List<SquareGameHistory> ret = new LinkedList<>();
-//
-//        if (data == null || data.length() == 0) {
-//            return ret;
-//        }
-//
-//        ArrayList<SquareGameHistory> list = new ArrayList<>();
-//
-//        for (String itemData : data.split(HistoryItem.itemSeparator)) {
-//            SquareGameHistory item = SquareGameHistory.getInstance(itemData);
-//            list.add(item);
-//        }
-//
-//        return ret;
-//    }
 
     @Override
     public boolean equals(Object obj) {
