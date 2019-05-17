@@ -88,6 +88,16 @@ public class JigsawPieceGroup {
 
 
 
+    public JigsawPieceGroup(ActivityJigsawGame context) {
+        this.context = context;
+        this.setMinI((int) +1e-9);
+        this.setMaxI((int) -1e-9);
+        this.setMinJ((int) +1e-9);
+        this.setMaxJ((int) -1e-9);
+        this.translationX = this.translationY = 0;
+        this.pieceList = new LinkedList<>();
+    }
+
     public JigsawPieceGroup(ActivityJigsawGame context, JigsawPiece piece) {
         this.context = context;
         this.setMinI(piece.getI());

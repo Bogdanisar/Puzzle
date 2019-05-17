@@ -8,10 +8,12 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.example.puzzle.ActivityJigsawGame;
+import com.example.puzzle.ActivityMain;
 
 import java.util.LinkedList;
 
@@ -23,8 +25,8 @@ public class JigsawPiece {
     protected JigsawPieceGroup group;
     protected ImageView view;
     protected boolean[] outerNichePresence;
-    private Bitmap pieceMask;
-    private Bitmap pieceBitmap;
+    protected Bitmap pieceMask;
+    protected Bitmap pieceBitmap;
 
 
     public ActivityJigsawGame getContext() {
@@ -515,25 +517,32 @@ public class JigsawPiece {
         }
     }
 
-    private void setView(Bitmap wholeImage, ActivityJigsawGame game) {
-        int pieceDimension = game.getPieceDimension();
-        int numHorizontal = game.numHorizontal;
-        int numVertical = game.numVertical;
-        int left = this.j * pieceDimension, top = i * pieceDimension;
+    private void setView(Bitmap wholeImage) {
+        int subImageContentWidth = this.context.getPieceDimension();
+        int subImageContentHeight = this.context.getPieceDimension();
+        int subImageTotalWidth = this.pieceMask.getWidth();
+        int subImageTotalHeight = this.pieceMask.getHeight();
+        int left = this.j * subImageContentWidth, top = this.i * subImageContentHeight;
+        int subImageTopNicheHeight = this.context.getNicheHeightDimension();
+        int subImageLeftNicheWidth = this.context.getNicheHeightDimension();
 
-
-        Bitmap subImage = Bitmap.createBitmap(wholeImage, left, top, wholeImage.getWidth() / numHorizontal, wholeImage.getHeight() / numVertical);
-        Bitmap rescaledSubImage = Bitmap.createScaledBitmap(subImage, this.pieceMask.getWidth(), this.pieceMask.getHeight(), true);
-        if (subImage != rescaledSubImage) {
-            subImage.recycle();
+        if (this.outerNichePresence[TOP]) {
+            top -= subImageTopNicheHeight;
         }
-        subImage = rescaledSubImage;
+
+        if (this.outerNichePresence[LEFT]) {
+            left -= subImageLeftNicheWidth;
+        }
+
+
+        Bitmap subImage = Bitmap.createBitmap(wholeImage, left, top, subImageTotalWidth, subImageTotalHeight);
 
         // merge the mask with the subImage
         int[] piecePixels = new int[ this.pieceMask.getHeight() * this.pieceMask.getWidth() ];
         int[] subImagePixels = new int[ this.pieceMask.getHeight() * this.pieceMask.getWidth() ];
         this.pieceMask.getPixels(piecePixels, 0, this.pieceMask.getWidth(), 0, 0, this.pieceMask.getWidth(), this.pieceMask.getHeight());
         subImage.getPixels(subImagePixels, 0, this.pieceMask.getWidth(), 0, 0, this.pieceMask.getWidth(), this.pieceMask.getHeight());
+
 
         for (int i = 0; i < piecePixels.length; ++i) {
             if (piecePixels[i] == FOREGROUND_COLOR) {
@@ -543,17 +552,19 @@ public class JigsawPiece {
             }
         }
 
+        subImage.recycle();
+
         // add the border
         addBorder(Color.TRANSPARENT, piecePixels, this.pieceMask.getHeight(), this.pieceMask.getWidth());
 
-        this.pieceBitmap = this.pieceMask.copy(this.pieceMask.getConfig(), true);
+        this.pieceBitmap = this.pieceMask;
         this.pieceBitmap.setPixels(piecePixels, 0, this.pieceMask.getWidth(), 0, 0, this.pieceMask.getWidth(), this.pieceMask.getHeight());
 
 
-        this.view = new ImageView(game);
+        this.view = new ImageView(this.context);
         this.view.setAdjustViewBounds(true);
 
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(subImage.getWidth(), subImage.getHeight());
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(this.pieceBitmap.getWidth(), this.pieceBitmap.getHeight());
         params.topMargin = 0;
         params.leftMargin = 0;
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
@@ -561,39 +572,31 @@ public class JigsawPiece {
         params.addRule(RelativeLayout.ALIGN_PARENT_START);
         this.view.setLayoutParams(params);
 
-        ActivityJigsawGame.setImageBackground(this.view, this.pieceBitmap, game);
+        ActivityJigsawGame.setImageBackground(this.view, this.pieceBitmap, this.context);
     }
 
-    private void setRandomPosition(Rect centerRect) {
+    public void setRandomPosition(Rect centerRect) {
         int minX = centerRect.left, maxX = centerRect.right - this.getTotalWidth();
         int minY = centerRect.top, maxY = centerRect.bottom - this.getTotalHeight();
 
         int x = ActivityJigsawGame.getRandomInt(minX, maxX);
         int y = ActivityJigsawGame.getRandomInt(minY, maxY);
 
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) this.view.getLayoutParams();
-        params.leftMargin = 0;
-        params.topMargin = 0;
-        this.setTraslation(x, y);
+        this.getGroup().setTranslation(x, y);
     }
 
 
 
 
-    public static JigsawPiece getPiece(int i, int j, Rect centerRect, ActivityJigsawGame game) {
-        Bitmap image = game.imageBitmap;
-        NICHE_STATE[][] rightMargin = game.rightMargin;
-        NICHE_STATE[][] bottomMargin = game.bottomMargin;
-
+    public static JigsawPiece getPiece(int i, int j, ActivityJigsawGame game) {
         JigsawPiece piece = new JigsawPiece(game);
         piece.setI(i);
         piece.setJ(j);
         piece.setGroup(null);
 
-        NICHE_STATE[] states = JigsawPiece.getNicheStates(i, j, rightMargin, bottomMargin);
+        NICHE_STATE[] states = JigsawPiece.getNicheStates(i, j, game.rightMargin, game.bottomMargin);
         piece.setMaskAndOffsets(states);
-        piece.setView(image, game);
-        piece.setRandomPosition(centerRect);
+        piece.setView(game.imageBitmap);
 
         return piece;
     }
