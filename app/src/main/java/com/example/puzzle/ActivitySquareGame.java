@@ -1,6 +1,5 @@
 package com.example.puzzle;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -17,7 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.puzzle.history.HistoryItem;
-import com.example.puzzle.history.SquareGameHistory;
+import com.example.puzzle.history.PieceGameHistory;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,7 +27,7 @@ import java.util.Random;
 
 public class ActivitySquareGame extends AppCompatActivity {
     public static String TAG = ActivityMain.COMMON_TAG;
-    public static String HISTORY_PREFERENCE_KEY = "SquareGameHistory";
+    public static final String HISTORY_PREFERENCE_KEY = "PieceGameHistory";
 
     static int imageId = 0;
     static int smallImageId = 0;
@@ -70,7 +69,7 @@ public class ActivitySquareGame extends AppCompatActivity {
     }
 
     public int getTopBarDimension() {
-        int menuId = R.dimen.squareGameMenuSize;
+        int menuId = R.dimen.TopGameMenu_Size;
         int menuSize = (int)this.getResources().getDimension(menuId);
         return getStatusBarHeight() + menuSize;
     }
@@ -249,8 +248,8 @@ public class ActivitySquareGame extends AppCompatActivity {
 
         Long endTimeInMilliseconds = Calendar.getInstance().getTimeInMillis();
 
-        SquareGameHistory item = new SquareGameHistory(
-                this.gamemodeString,
+        PieceGameHistory item = new PieceGameHistory(
+                "SquareGame - " + this.gamemodeString,
                 ActivitySquareGame.startTimeInMilliseconds,
                 ActivitySquareGame.smallImageId,
                 endTimeInMilliseconds - ActivitySquareGame.startTimeInMilliseconds,
@@ -266,12 +265,12 @@ public class ActivitySquareGame extends AppCompatActivity {
     }
 
     private void updateText() {
-        TextView textView = findViewById(R.id.menuGameText);
+        TextView textView = findViewById(R.id.TopGameMenu_Text);
         String text;
 
         ++this.numPlacedPieces;
         if (this.numPlacedPieces == ActivitySquareGame.numHorizontal * ActivitySquareGame.numVertical) {
-            text = this.getResources().getString(R.string.wonText);
+            text = this.getResources().getString(R.string.TopGameMenu_WonText);
             this.updateHistory();
         }
         else {

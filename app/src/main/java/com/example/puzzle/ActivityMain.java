@@ -9,6 +9,7 @@ import android.view.View;
 public class ActivityMain extends AppCompatActivity {
     public static String COMMON_TAG = "puzzletag";
     public static String TAG = ActivityMain.COMMON_TAG;
+    public static String SEPARATOR = "===================================================================";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -86,6 +86,13 @@ public class ActivityGameOptions extends AppCompatActivity {
 
         rowInput = findViewById(R.id.inputRowNumber);
         columnInput = findViewById(R.id.inputColumnNumber);
+
+
+        // setting default game parameter values;
+        rowInput.setText("3");
+        columnInput.setText("3");
+        selectGamemode( findViewById(R.id.gamemodeJigsawGameView) );
+        selectImage( findViewById(R.id.imageView1) );
     }
 
     public void startGame(View view) {
@@ -154,10 +161,8 @@ public class ActivityGameOptions extends AppCompatActivity {
         }
 
         if (intentImageId == null) {
+            // nu ar trebui sa ajunga aici
             throw new IllegalArgumentException("imageSelected was not found; selected view id: " + Integer.toString(this.imageSelected));
-//            Log.e(ActivityGameOptions.TAG, "imageSelected was not found, reverting to default; id: " + Integer.toString(this.imageSelected));
-//            intentImageId = R.drawable.p1;
-//            smallintentImageId = R.drawable.p1;
         }
 
         Intent intent = null;
@@ -184,6 +189,14 @@ public class ActivityGameOptions extends AppCompatActivity {
             intent.putExtra("imageSelected", intentImageId);
             intent.putExtra("smallImageSelected", smallIntentImageId);
             intent.putExtra("type", "onePiece");
+        }
+        else if (gamemodeSelected.equals(R.id.gamemodeJigsawGameView)) {
+            Intent intent = new Intent(this, ActivityJigsawGame.class);
+            intent.putExtra("rowNumber", rowNumber);
+            intent.putExtra("columnNumber", columnNumber);
+            intent.putExtra("imageSelected", intentImageId);
+            intent.putExtra("smallImageSelected", smallIntentImageId);
+            startActivity(intent);
         }
 
         startActivity(intent);
