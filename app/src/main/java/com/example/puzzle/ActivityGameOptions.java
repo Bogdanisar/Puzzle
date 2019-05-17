@@ -15,8 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ActivityGameOptions extends AppCompatActivity {
-    public static String COMMON_TAG = "puzzletag";
-    public static String TAG = ActivityMain.COMMON_TAG;
+    public static String TAG = ActivityMain.COMMON_TAG + "ActivityGameOptions";
+
+    public static final int minPieces = 3;
+    public static final int maxPieces = 6;
+
     private EditText rowInput;
     private EditText columnInput;
     private Integer imageSelected = null;
@@ -105,34 +108,32 @@ public class ActivityGameOptions extends AppCompatActivity {
         boolean incorrectFlag = false;
         String message = null;
 
-        if(rowNumber<2){
+        if (rowNumber < minPieces){
             incorrectFlag = true;
             message = "Row Number Too Small!";
         }
-        if(!incorrectFlag && rowNumber>9){
+        else if (maxPieces < rowNumber){
             incorrectFlag = true;
             message = "Row Number Too Big!";
         }
-        if(!incorrectFlag && columnNumber<2){
+        else if (columnNumber < minPieces){
             incorrectFlag = true;
             message = "Column Number Too Small!";
         }
-        if(!incorrectFlag && columnNumber>10){
+        else if (maxPieces < columnNumber){
             incorrectFlag = true;
             message = "Column Number Too Big!";
         }
-
-        if (!incorrectFlag && this.gamemodeSelected == null) {
+        else if (this.gamemodeSelected == null) {
             incorrectFlag = true;
             message = "No Gamemode Selected!";
         }
-
-        if(!incorrectFlag && this.imageSelected == null){
+        else if (this.imageSelected == null){
             incorrectFlag = true;
             message = "No Image Selected!";
         }
 
-        if(incorrectFlag){
+        if (incorrectFlag) {
             Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG);
             toast.show();
             return;
@@ -159,35 +160,34 @@ public class ActivityGameOptions extends AppCompatActivity {
 //            smallintentImageId = R.drawable.p1;
         }
 
+        Intent intent = null;
         if (gamemodeSelected.equals(R.id.gamemodeSquareGameView)) {
-            Intent intent = new Intent(this, ActivitySquareGame.class);
+            intent = new Intent(this, ActivitySquareGame.class);
             intent.putExtra("rowNumber", rowNumber);
             intent.putExtra("columnNumber", columnNumber);
             intent.putExtra("imageSelected", intentImageId);
             intent.putExtra("smallImageSelected", smallIntentImageId);
             intent.putExtra("type", "simple");
-            startActivity(intent);
         }
         else if (gamemodeSelected.equals(R.id.gamemodeSquareGameShellView)) {
-            Intent intent = new Intent(this, ActivitySquareGame.class);
+            intent = new Intent(this, ActivitySquareGame.class);
             intent.putExtra("rowNumber", rowNumber);
             intent.putExtra("columnNumber", columnNumber);
             intent.putExtra("imageSelected", intentImageId);
             intent.putExtra("smallImageSelected", smallIntentImageId);
             intent.putExtra("type", "shell");
-            startActivity(intent);
         }
         else if (gamemodeSelected.equals(R.id.gamemodeSquareGameOnePieceView)) {
-            Intent intent = new Intent(this, ActivitySquareGame.class);
+            intent = new Intent(this, ActivitySquareGame.class);
             intent.putExtra("rowNumber", rowNumber);
             intent.putExtra("columnNumber", columnNumber);
             intent.putExtra("imageSelected", intentImageId);
             intent.putExtra("smallImageSelected", smallIntentImageId);
             intent.putExtra("type", "onePiece");
-            startActivity(intent);
         }
 
-        //in ActivitySquareGame Activity: String value = getIntent().getExtras().getString(key);
+        startActivity(intent);
+        finish();
     }
 
 
