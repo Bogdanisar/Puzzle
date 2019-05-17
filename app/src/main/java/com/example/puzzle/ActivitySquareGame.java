@@ -102,6 +102,7 @@ public class ActivitySquareGame extends AppCompatActivity {
         else {
             this.setupOnePiece(this.imageBitmap);
         }
+        this.imageBitmap.recycle();
 
         this.topLayout.requestLayout();
     }
@@ -141,21 +142,16 @@ public class ActivitySquareGame extends AppCompatActivity {
         Bitmap imageBitmap = BitmapFactory.decodeResource(this.getResources(), ActivitySquareGame.imageId);
         int newImageWidth = Math.min(ActivitySquareGame.maxImageWidth, imageBitmap.getWidth());
         int newImageHeight = Math.min(ActivitySquareGame.maxImageHeight, imageBitmap.getHeight());
-        Bitmap auxBitmap = Bitmap.createScaledBitmap(imageBitmap, newImageWidth, newImageHeight, true);
-        if (auxBitmap != imageBitmap) {
-            imageBitmap.recycle();
-        }
-        imageBitmap = auxBitmap;
-
-        newImageWidth = imageBitmap.getWidth() / numHorizontal * numHorizontal;
-        newImageHeight = imageBitmap.getHeight() / numVertical * numVertical;
+        newImageWidth = newImageWidth / numHorizontal * numHorizontal;
+        newImageHeight = newImageHeight / numVertical * numVertical;
 
         Bitmap scaledImage = Bitmap.createScaledBitmap(imageBitmap, newImageWidth, newImageHeight, true);
         if (scaledImage != imageBitmap) {
             imageBitmap.recycle();
         }
+        imageBitmap = scaledImage;
 
-        return scaledImage;
+        return imageBitmap;
     }
 
     private void setupSimple(Bitmap scaledImage) {
@@ -191,6 +187,22 @@ public class ActivitySquareGame extends AppCompatActivity {
         this.generateNewPiece();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        for (int i = 0; i < numVertical; ++i) {
+            for (int j = 0; j < numHorizontal; ++j) {
+                if (this.pieceMatrix[i][j] != null) {
+                    this.pieceMatrix[i][j].originalBitmap.recycle();
+                }
+            }
+        }
+
+        for (SquareGamePiece piece : this.pieceList) {
+            piece.originalBitmap.recycle();
+        }
+
+        super.onSaveInstanceState(outState);
+    }
 
     // methods for piece drag & drop and manipulation;
     public void changePosition(View v, float x, float y) {
