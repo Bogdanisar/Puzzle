@@ -191,12 +191,11 @@ public class ActivityGameOptions extends AppCompatActivity {
             intent.putExtra("type", "onePiece");
         }
         else if (gamemodeSelected.equals(R.id.gamemodeJigsawGameView)) {
-            Intent intent = new Intent(this, ActivityJigsawGame.class);
+            intent = new Intent(this, ActivityJigsawGame.class);
             intent.putExtra("rowNumber", rowNumber);
             intent.putExtra("columnNumber", columnNumber);
             intent.putExtra("imageSelected", intentImageId);
             intent.putExtra("smallImageSelected", smallIntentImageId);
-            startActivity(intent);
         }
 
         startActivity(intent);

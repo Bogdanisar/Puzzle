@@ -175,8 +175,9 @@ public class ActivitySquareGame extends AppCompatActivity {
         if (scaledImage != imageBitmap) {
             imageBitmap.recycle();
         }
+        imageBitmap = scaledImage;
 
-        return scaledImage;
+        return imageBitmap;
     }
 
     private void setupSimple(Bitmap scaledImage) {
