@@ -27,7 +27,10 @@
                 style="@style/TopGameMenu_Button"
                 android:background="@color/colorPrimaryDark"
                 android:text="Back"
-                android:textColor="@android:color/white"></Button>
+                android:textColor="@android:color/white">
+                android:onClick="backButtonPressed"
+                style="@style/TopGameMenu_Button">
+            </Button>
 
         </RelativeLayout>
 

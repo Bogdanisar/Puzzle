@@ -12,27 +12,14 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class PieceGameHistoryTest {
-
     @Test
     public void SquareGameHistory_hasCorrectEquals() {
-        PieceGameHistory obj1 = new PieceGameHistory("Simple", 200L, 10, 1, 5, 5);
-        PieceGameHistory obj2 = new PieceGameHistory("Simple", 200L, 10, 1, 5, 5);
+        PieceGameHistory obj1, obj2;
+        obj1 = new PieceGameHistory("Simple", 200L, 10, 1, 5, 5);
+        obj2 = new PieceGameHistory("Simple", 200L, 10, 1, 5, 5);
 
         assertEquals(obj1, obj1);
         assertEquals(obj1, obj2);
-
-        ArrayList<PieceGameHistory> list = new ArrayList<PieceGameHistory>();
-        list.add(new PieceGameHistory("Simpled", 200L, 10, 1, 5, 5));
-        list.add(new PieceGameHistory("Simple", 200L, 10, 1, 5, 5));
-        list.add(new PieceGameHistory("Simple", 201L, 10, 1, 5, 5));
-        list.add(new PieceGameHistory("Simple", 201L, 101, 1, 5, 5));
-        list.add(new PieceGameHistory("Simple", 201L, 101, 12, 5, 5));
-        list.add(new PieceGameHistory("Simple", 201L, 101, 12, 55, 5));
-        list.add(new PieceGameHistory("Simple", 201L, 101, 12, 55, 6));
-
-        for (int i = 0; i < list.size() - 1; ++i) {
-            assertNotEquals(list.get(i), list.get(i + 1));
-        }
 
         obj1 = new PieceGameHistory(null, 200L, 10, 1, 5, 5);
         obj2 = new PieceGameHistory("Simple", 200L, 10, 1, 5, 5);
@@ -58,6 +45,25 @@ public class PieceGameHistoryTest {
         obj2 = new PieceGameHistory(null, 200L, 10, 1, 5, 5);
         assertEquals(obj1, obj2);
     }
+
+    @Test
+    public void SquareGameHistory_isDifferent() {
+
+        ArrayList<PieceGameHistory> list = new ArrayList<PieceGameHistory>();
+        list.add(new PieceGameHistory("Simpled", 200L, 10, 1, 5, 5));
+        list.add(new PieceGameHistory("Simple", 200L, 10, 1, 5, 5));
+        list.add(new PieceGameHistory("Simple", 201L, 10, 1, 5, 5));
+        list.add(new PieceGameHistory("Simple", 201L, 101, 1, 5, 5));
+        list.add(new PieceGameHistory("Simple", 201L, 101, 12, 5, 5));
+        list.add(new PieceGameHistory("Simple", 201L, 101, 12, 55, 5));
+        list.add(new PieceGameHistory("Simple", 201L, 101, 12, 55, 6));
+
+        for (int i = 0; i < list.size() - 1; ++i) {
+            assertNotEquals(list.get(i), list.get(i + 1));
+        }
+    }
+
+
 
     @Test
     public void SquareGameHistory_doesCorrectSort() {
