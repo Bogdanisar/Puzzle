@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_color_settings"
+    tools:context=".ActivitySettings">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
+        android:layout_marginBottom="32dp"
+        android:background="#BFFAF8F8"
+        android:orientation="vertical"
+        android:paddingLeft="10sp"
+        android:paddingTop="10sp"
+        android:paddingRight="10sp"
+        android:paddingBottom="10sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/historyTitleText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:paddingLeft="10sp"
+            android:paddingTop="10sp"
+            android:paddingRight="10sp"
+            android:paddingBottom="10sp"
+            android:text="Settings"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#40D3762F"
+            android:padding="16sp"
+            android:paddingLeft="16sp"
+            android:paddingTop="16sp"
+            android:paddingRight="16sp"
+            android:paddingBottom="16sp">
+
+            <LinearLayout
+                android:id="@+id/historyItemLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginBottom="30px"-->
+                <!--android:background="#80D32F2F"-->
+                <!--android:orientation="vertical">-->
+
+                <!--<ImageView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="195dp"-->
+                <!--android:padding="5sp"-->
+                <!--android:paddingTop="5sp"-->
+                <!--app:srcCompat="@drawable/p6small" />-->
+
+                <!--<TableLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:orientation="horizontal"-->
+                <!--android:paddingLeft="5sp"-->
+                <!--android:paddingTop="5sp"-->
+                <!--android:paddingRight="5sp"-->
+                <!--android:paddingBottom="5sp">-->
+
+                <!--<TableRow-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent">-->
+
+                <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Game Type"-->
+                <!--android:textSize="16sp"-->
+                <!--android:textStyle="bold" />-->
+
+                <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:gravity="center_horizontal"-->
+                <!--android:text="SquareGame"-->
+                <!--android:textSize="16sp"-->
+                <!--android:textStyle="bold" />-->
+                <!--</TableRow>-->
+
+                <!--<TableRow-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent">-->
+
+                <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Date Played"-->
+                <!--android:textSize="16sp"-->
+                <!--android:textStyle="bold" />-->
+
+                <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:gravity="center_horizontal"-->
+                <!--android:text="25-4-2019"-->
+                <!--android:textSize="16sp"-->
+                <!--android:textStyle="bold" />-->
+                <!--</TableRow>-->
+
+                <!--<TableRow-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent">-->
+
+                <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="Game Time"-->
+                <!--android:textSize="16sp"-->
+                <!--android:textStyle="bold" />-->
+
+                <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:gravity="center_horizontal"-->
+                <!--android:text="05:37"-->
+                <!--android:textSize="16sp"-->
+                <!--android:textStyle="bold" />-->
+                <!--</TableRow>-->
+                <!--</TableLayout>-->
+
+                <!--</LinearLayout>-->
+
+            </LinearLayout>
+
+        </ScrollView>
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

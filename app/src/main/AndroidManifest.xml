@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    android:installLocation="preferExternal"
-    package="com.example.puzzle">
+    package="com.example.puzzle"
+    android:installLocation="preferExternal">
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:largeHeap="true">
-        <activity android:name=".ActivityJigsawGame"></activity>
+        android:theme="@style/AppTheme">
+        <activity android:name=".ActivitySettings"></activity>
+        <activity android:name=".ActivityAbout" />
+        <activity android:name=".ActivityJigsawGame" />
         <activity android:name=".ActivityHistory" />
         <activity
             android:name=".ActivityGameOptions"

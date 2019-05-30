@@ -4,4 +4,23 @@
 
     <string name="TopGameMenu_StartText">Game started</string>
     <string name="TopGameMenu_WonText">You Won!</string>
+    <string name="about_text">
+        How to play each Game Mode:\n\n
+            \t1. Square Game - Simple: All pieces must be placed in their correct spot.\n
+            \t2. Square Game - Shell: First piece must be placed on the edge. After that, each piece must be connected to a fixed one.\n
+            \t3. Square Game - One piece: The corners are already fixed. One at a time, a piece will appear on the screen and it must be placed in its correct spot.\n
+            \t4. Jigsaw Game: The classic game, all pieces must be connected to form the full image.\n\n
+        The player wins when the full image is formed, no matter the game mode.\n\n\n
+
+        Also, before each game, the player must choose:\n\n
+            \t- the puzzle dimensions by entering row and column number\n
+            \t- a game mode from the list\n
+            \t- an image, either from the default image list or from the personal gallery\n\n\n
+
+        Made for MDS Lab.\n
+        Students:\n
+            \tBurcea Bogdan-Madalin\n
+            \tMocanu Alexandru\n
+            \tSotir Anca-Nicoleta
+    </string>
 </resources>

@@ -24,7 +24,7 @@
         android:paddingBottom="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
@@ -87,23 +87,23 @@
 
                 <TextView
                     android:id="@+id/gamemodeSquareGameView"
-                    android:text="Square Game - Simple"
-                    style="@style/gamemodeSelectView"/>
+                    style="@style/gamemodeSelectView"
+                    android:text="Square Game - Simple" />
 
                 <TextView
                     android:id="@+id/gamemodeSquareGameShellView"
-                    android:text="Square Game - Shell"
-                    style="@style/gamemodeSelectView" />
+                    style="@style/gamemodeSelectView"
+                    android:text="Square Game - Shell" />
 
                 <TextView
                     android:id="@+id/gamemodeSquareGameOnePieceView"
-                    android:text="Square Game - One Piece"
-                    style="@style/gamemodeSelectView"/>
+                    style="@style/gamemodeSelectView"
+                    android:text="Square Game - One Piece" />
 
                 <TextView
                     android:id="@+id/gamemodeJigsawGameView"
-                    android:text="Jigsaw Game"
-                    style="@style/gamemodeSelectView"/>
+                    style="@style/gamemodeSelectView"
+                    android:text="Jigsaw Game" />
 
 
             </LinearLayout>
@@ -197,10 +197,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10sp"
             android:background="#991231"
+            android:onClick="startGame"
             android:text="start puzzle"
             android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:onClick="startGame"/>
+            android:textSize="18sp" />
 
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

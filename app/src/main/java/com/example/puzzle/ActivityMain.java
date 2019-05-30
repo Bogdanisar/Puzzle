@@ -38,4 +38,15 @@ public class ActivityMain extends AppCompatActivity {
         Intent intent = new Intent(this, ActivityHistory.class);
         startActivity(intent);
     }
+
+    public void openAbout(View view) {
+        Intent intent = new Intent(this, ActivityAbout.class);
+        startActivity(intent);
+    }
+    public void openSettings(View view) {
+        Intent intent = new Intent(this, ActivitySettings.class);
+        startActivity(intent);
+    }
+
+
 }

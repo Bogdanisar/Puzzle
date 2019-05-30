@@ -24,9 +24,10 @@
 
             <Button
                 android:id="@+id/backButton"
+                style="@style/TopGameMenu_Button"
+                android:background="@color/colorPrimaryDark"
                 android:text="Back"
-                style="@style/TopGameMenu_Button">
-            </Button>
+                android:textColor="@android:color/white"></Button>
 
         </RelativeLayout>
 
@@ -54,9 +55,10 @@
 
             <Button
                 android:id="@+id/statusButton"
+                style="@style/TopGameMenu_Button"
+                android:background="@color/colorPrimaryDark"
                 android:text="Status"
-                style="@style/TopGameMenu_Button">
-            </Button>
+                android:textColor="@android:color/white"></Button>
 
         </RelativeLayout>
 

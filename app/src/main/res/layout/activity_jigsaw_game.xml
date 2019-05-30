@@ -25,9 +25,10 @@
 
             <Button
                 android:id="@+id/backButton"
+                style="@style/TopGameMenu_Button"
+                android:background="@color/colorPrimaryDark"
                 android:text="Back"
-                style="@style/TopGameMenu_Button">
-            </Button>
+                android:textColor="@android:color/white"></Button>
 
         </RelativeLayout>
 
@@ -55,9 +56,10 @@
 
             <Button
                 android:id="@+id/statusButton"
+                style="@style/TopGameMenu_Button"
+                android:background="@color/colorPrimaryDark"
                 android:text="Status"
-                style="@style/TopGameMenu_Button">
-            </Button>
+                android:textColor="@android:color/white"></Button>
 
         </RelativeLayout>
 
@@ -87,10 +89,11 @@
             android:layout_height="match_parent">
 
             <Button
-                android:text="Zoom in"
+                style="@style/TopGameMenu_Button"
+                android:background="@color/colorPrimaryDark"
                 android:onClick="zoomIn"
-                style="@style/TopGameMenu_Button">
-            </Button>
+                android:text="Zoom in"
+                android:textColor="@android:color/white"></Button>
 
         </RelativeLayout>
 
@@ -100,13 +103,11 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:layout_height="match_parent"
                 android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:gravity="center"
-                android:textStyle="bold"
                 android:textSize="45px"
-                android:text="Placeholder">
-            </TextView>
+                android:textStyle="bold"></TextView>
 
         </RelativeLayout>
 
@@ -116,10 +117,11 @@
             android:layout_height="match_parent">
 
             <Button
-                android:text="Zoom out"
+                style="@style/TopGameMenu_Button"
+                android:background="@color/colorPrimaryDark"
                 android:onClick="zoomOut"
-                style="@style/TopGameMenu_Button">
-            </Button>
+                android:text="Zoom out"
+                android:textColor="@android:color/white"></Button>
 
         </RelativeLayout>
 
