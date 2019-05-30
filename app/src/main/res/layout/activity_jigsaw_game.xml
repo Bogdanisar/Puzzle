@@ -25,10 +25,9 @@
 
             <Button
                 android:id="@+id/backButton"
-                style="@style/TopGameMenu_Button"
                 android:background="@color/colorPrimaryDark"
                 android:text="Back"
-                android:textColor="@android:color/white">
+                android:textColor="@android:color/white"
                 android:onClick="backButtonPressed"
                 style="@style/TopGameMenu_Button">
             </Button>
