@@ -47,6 +47,7 @@ public class ActivityHistory extends AppCompatActivity {
             allHistoryItems.addAll(items);
         }
         Collections.sort(allHistoryItems);
+        Collections.reverse(allHistoryItems);
 
 
         for (HistoryItem item : allHistoryItems) {
