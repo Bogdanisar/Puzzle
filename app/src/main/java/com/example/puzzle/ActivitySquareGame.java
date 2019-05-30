@@ -4,7 +4,9 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -110,7 +112,7 @@ public class ActivitySquareGame extends AppCompatActivity {
         Log.i(TAG, "statusBarHeight: " + this.getStatusBarHeight());
         Log.i(TAG, "minY: " + this.minY);
 
-        this.imageBitmap = this.getScaledImage();
+        this.getScaledImage();
 
         if (this.gamemodeSimple || this.gamemodeShell) {
             this.setupSimple(this.imageBitmap);
@@ -118,17 +120,30 @@ public class ActivitySquareGame extends AppCompatActivity {
         else {
             this.setupOnePiece(this.imageBitmap);
         }
-        this.imageBitmap.recycle();
 
         this.topLayout.requestLayout();
     }
 
     private void setGameParameters() {
         Bundle bundle = this.getIntent().getExtras();
-        ActivitySquareGame.imageId = (Integer)bundle.get("imageSelected");
-        ActivitySquareGame.smallImageId = (Integer)bundle.get("smallImageSelected");
         ActivitySquareGame.numVertical = (Integer)bundle.get("columnNumber");
         ActivitySquareGame.numHorizontal = (Integer)bundle.get("rowNumber");
+        ActivitySquareGame.smallImageId = (Integer)bundle.get("smallImageSelected");
+        if (bundle.get("imageSelected") == null) {
+            Uri uri = Uri.parse( (String)bundle.get("userImageUri") );
+
+            try {
+                this.imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+            }
+            catch (Exception except) {
+                Log.e(TAG, "There was an error loading the userBitmap");
+                finish();
+            }
+        }
+        else {
+            ActivitySquareGame.imageId = (Integer)bundle.get("imageSelected");
+            this.imageBitmap = BitmapFactory.decodeResource(this.getResources(), ActivitySquareGame.imageId);
+        }
 
         Object typeObject = bundle.get("type");
         if (typeObject != null && ((String)typeObject).equals("shell")) {
@@ -159,20 +174,17 @@ public class ActivitySquareGame extends AppCompatActivity {
         this.maxY = this.getContainerHeight() - ActivitySquareGame.pieceHeight;
     }
 
-    public Bitmap getScaledImage() {
-        Bitmap imageBitmap = BitmapFactory.decodeResource(this.getResources(), ActivitySquareGame.imageId);
-        int newImageWidth = Math.min(ActivitySquareGame.maxImageWidth, imageBitmap.getWidth());
-        int newImageHeight = Math.min(ActivitySquareGame.maxImageHeight, imageBitmap.getHeight());
+    public void getScaledImage() {
+        int newImageWidth = Math.min(ActivitySquareGame.maxImageWidth, this.imageBitmap.getWidth());
+        int newImageHeight = Math.min(ActivitySquareGame.maxImageHeight, this.imageBitmap.getHeight());
         newImageWidth = newImageWidth / numHorizontal * numHorizontal;
         newImageHeight = newImageHeight / numVertical * numVertical;
 
-        Bitmap scaledImage = Bitmap.createScaledBitmap(imageBitmap, newImageWidth, newImageHeight, true);
-        if (scaledImage != imageBitmap) {
-            imageBitmap.recycle();
+        Bitmap scaledImage = Bitmap.createScaledBitmap(this.imageBitmap, newImageWidth, newImageHeight, true);
+        if (scaledImage != this.imageBitmap) {
+            this.imageBitmap.recycle();
         }
-        imageBitmap = scaledImage;
-
-        return imageBitmap;
+        this.imageBitmap = scaledImage;
     }
 
     private void setupSimple(Bitmap scaledImage) {
@@ -210,20 +222,45 @@ public class ActivitySquareGame extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        for (int i = 0; i < numVertical; ++i) {
-            for (int j = 0; j < numHorizontal; ++j) {
-                if (this.pieceMatrix[i][j] != null) {
-                    this.pieceMatrix[i][j].originalBitmap.recycle();
+        freeMemory();
+
+        Log.i(TAG, "onSaveInstanceState was called");
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onDestroy() {
+        freeMemory();
+
+        Log.i(TAG, "onDestory was called");
+
+        super.onDestroy();
+    }
+
+    private void freeMemory() {
+        if (this.pieceMatrix != null) {
+            for (int i = 0; i < numVertical; ++i) {
+                for (int j = 0; j < numHorizontal; ++j) {
+                    if (this.pieceMatrix[i][j] != null) {
+                        this.pieceMatrix[i][j].originalBitmap.recycle();
+                    }
                 }
             }
         }
 
         for (SquareGamePiece piece : this.pieceList) {
-            piece.originalBitmap.recycle();
+            if (piece != null && piece.originalBitmap != null) {
+                piece.originalBitmap.recycle();
+            }
         }
 
-        super.onSaveInstanceState(outState);
+        if (this.imageBitmap != null) {
+            this.imageBitmap.recycle();
+        }
     }
+
+
 
     // methods for piece drag & drop and manipulation;
     public void changePosition(View v, float x, float y) {

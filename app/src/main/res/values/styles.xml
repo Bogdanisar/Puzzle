@@ -10,6 +10,14 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="gameoptionsButton">
+        <item name="android:layout_width">0px</item>
+        <item name="android:layout_weight">0.4</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">#991231</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">18sp</item>
+    </style>
 
     <style name="gamemodeSelectView">
         <item name="android:layout_width">match_parent</item>
@@ -32,6 +40,8 @@
 
         <item name="android:onClick">selectImage</item>
     </style>
+
+
 
     <style name="TopGameMenu_Button">
         <item name="android:layout_height">match_parent</item>

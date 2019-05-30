@@ -1,8 +1,12 @@
 package com.example.puzzle;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +20,7 @@ import java.util.List;
 
 public class ActivityGameOptions extends AppCompatActivity {
     public static String TAG = ActivityMain.COMMON_TAG + "ActivityGameOptions";
+    public static int GALLERY_IMAGE_INTENT = 1;
 
     public static final int minPieces = 3;
     public static final int maxPieces = 6;
@@ -30,6 +35,8 @@ public class ActivityGameOptions extends AppCompatActivity {
     private List<Integer> imageViewArray = new ArrayList<>();
     private List<Integer> imageResourceArray = new ArrayList<>();
     private List<Integer> smallImageResourceArray = new ArrayList<>();
+
+    private Uri userBitmapUri = null;
 
     {
         imageViewArray.add(R.id.imageView1);
@@ -135,7 +142,7 @@ public class ActivityGameOptions extends AppCompatActivity {
             incorrectFlag = true;
             message = "No Gamemode Selected!";
         }
-        else if (this.imageSelected == null){
+        else if (this.imageSelected == null && this.userBitmapUri == null){
             incorrectFlag = true;
             message = "No Image Selected!";
         }
@@ -146,56 +153,46 @@ public class ActivityGameOptions extends AppCompatActivity {
             return;
         }
 
-        Log.i(ActivityGameOptions.TAG, this.imageSelected.toString());
         Log.i(ActivityGameOptions.TAG, rowNumber.toString());
         Log.i(ActivityGameOptions.TAG, columnNumber.toString());
 
         Integer intentImageId = null;
         Integer smallIntentImageId = null;
         for (int i = 0; i < this.imageViewArray.size(); ++i) {
-            if (this.imageSelected.equals(this.imageViewArray.get(i))) {
+            if (this.imageViewArray.get(i).equals(this.imageSelected)) {
                 intentImageId = this.imageResourceArray.get(i);
                 smallIntentImageId = this.smallImageResourceArray.get(i);
                 break;
             }
         }
 
-        if (intentImageId == null) {
-            // nu ar trebui sa ajunga aici
-            throw new IllegalArgumentException("imageSelected was not found; selected view id: " + Integer.toString(this.imageSelected));
-        }
-
         Intent intent = null;
         if (gamemodeSelected.equals(R.id.gamemodeSquareGameView)) {
             intent = new Intent(this, ActivitySquareGame.class);
-            intent.putExtra("rowNumber", rowNumber);
-            intent.putExtra("columnNumber", columnNumber);
-            intent.putExtra("imageSelected", intentImageId);
-            intent.putExtra("smallImageSelected", smallIntentImageId);
             intent.putExtra("type", "simple");
         }
         else if (gamemodeSelected.equals(R.id.gamemodeSquareGameShellView)) {
             intent = new Intent(this, ActivitySquareGame.class);
-            intent.putExtra("rowNumber", rowNumber);
-            intent.putExtra("columnNumber", columnNumber);
-            intent.putExtra("imageSelected", intentImageId);
-            intent.putExtra("smallImageSelected", smallIntentImageId);
             intent.putExtra("type", "shell");
         }
         else if (gamemodeSelected.equals(R.id.gamemodeSquareGameOnePieceView)) {
             intent = new Intent(this, ActivitySquareGame.class);
-            intent.putExtra("rowNumber", rowNumber);
-            intent.putExtra("columnNumber", columnNumber);
-            intent.putExtra("imageSelected", intentImageId);
-            intent.putExtra("smallImageSelected", smallIntentImageId);
             intent.putExtra("type", "onePiece");
         }
         else if (gamemodeSelected.equals(R.id.gamemodeJigsawGameView)) {
             intent = new Intent(this, ActivityJigsawGame.class);
-            intent.putExtra("rowNumber", rowNumber);
-            intent.putExtra("columnNumber", columnNumber);
+        }
+
+        intent.putExtra("rowNumber", rowNumber);
+        intent.putExtra("columnNumber", columnNumber);
+
+        if (intentImageId != null) {
             intent.putExtra("imageSelected", intentImageId);
             intent.putExtra("smallImageSelected", smallIntentImageId);
+        }
+        else {
+            intent.putExtra("userImageUri", this.userBitmapUri.toString());
+            intent.putExtra("smallImageSelected", R.drawable.user_image_small);
         }
 
         startActivity(intent);
@@ -255,5 +252,27 @@ public class ActivityGameOptions extends AppCompatActivity {
 
         this.applyBackgroundFromId(view, R.color.colorAccentText);
         this.removeBackground(this.gamemodeSelectedPrior);
+    }
+
+
+
+    public void chooseImage(View view) {
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, GALLERY_IMAGE_INTENT);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == GALLERY_IMAGE_INTENT && resultCode == Activity.RESULT_OK && intent != null) {
+
+            // Get the URI of the selected file
+            final Uri uri = intent.getData();
+            this.userBitmapUri = uri;
+
+            this.imageSelectedPrior = this.imageSelected;
+            this.imageSelected = null;
+            this.removeBackground(this.imageSelectedPrior);
+        }
     }
 }
