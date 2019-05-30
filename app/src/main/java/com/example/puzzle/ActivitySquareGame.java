@@ -486,4 +486,8 @@ public class ActivitySquareGame extends AppCompatActivity {
 
         return true;
     }
+
+    public void backButtonPressed(View view) {
+        finish();
+    }
 }

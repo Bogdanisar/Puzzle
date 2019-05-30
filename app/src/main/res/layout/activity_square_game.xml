@@ -25,6 +25,7 @@
             <Button
                 android:id="@+id/backButton"
                 android:text="Back"
+                android:onClick="backButtonPressed"
                 style="@style/TopGameMenu_Button">
             </Button>
 

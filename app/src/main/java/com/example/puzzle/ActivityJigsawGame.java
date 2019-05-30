@@ -437,7 +437,9 @@ public class ActivityJigsawGame extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
-
+    public void backButtonPressed(View view) {
+        finish();
+    }
 
 
 
