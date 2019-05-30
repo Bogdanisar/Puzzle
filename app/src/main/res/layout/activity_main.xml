@@ -19,6 +19,7 @@
         android:textColor="#FFFFFF"
         android:textSize="100dp"
         android:textStyle="bold"
+        app:fontFamily="@font/PhilosopherBold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
