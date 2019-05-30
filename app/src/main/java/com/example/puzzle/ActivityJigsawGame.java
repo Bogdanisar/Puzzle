@@ -7,9 +7,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -51,7 +53,9 @@ public class ActivityJigsawGame extends AppCompatActivity {
     public int initialHeightMargin = 0, initialWidthMargin = 0;
     public Bitmap imageBitmap = null;
 
-    public int imageId = -1, smallImageId = -1;
+    public Integer imageId = null;
+    public int smallImageId = -1;
+    public Uri userImageUri = null;
     public int numVertical = -1, numHorizontal = -1;
     public int numClusters = -1;
 
@@ -182,7 +186,7 @@ public class ActivityJigsawGame extends AppCompatActivity {
 
         // get the pieces using the initialNicheHeightDimension, which should be bigger
         // and will make the pieces clearer when zooming and rotating the orientation;
-        this.imageBitmap = this.getScaledImage(this.imageId);
+        this.getScaledImage();
         JigsawPiece.buildNiches(this.getNicheHeightDimension(), this.getNicheWidthDimension());
         this.generateBorderMatrices();
 
@@ -208,7 +212,7 @@ public class ActivityJigsawGame extends AppCompatActivity {
 
         // get the pieces using the initialNicheHeightDimension, which should be bigger
         // and will make the pieces clearer when zooming and rotating the orientation;
-        this.imageBitmap = this.getScaledImage(this.imageId);
+        this.getScaledImage();
         JigsawPiece.buildNiches(this.getNicheHeightDimension(), this.getNicheWidthDimension());
         this.rightMargin = this.savedState.rightMargin;
         this.bottomMargin = this.savedState.bottomMargin;
@@ -252,14 +256,28 @@ public class ActivityJigsawGame extends AppCompatActivity {
 
     void setGameParametersFromIntent() {
         this.topLayout = findViewById(R.id.jigsawGamePuzzleLayout);
-        Bundle bundle = getIntent().getExtras();
 
-        this.imageId = (Integer)bundle.get("imageSelected");
+        Bundle bundle = this.getIntent().getExtras();
+        this.numVertical = (Integer)bundle.get("columnNumber");
+        this.numHorizontal = (Integer)bundle.get("rowNumber");
         this.smallImageId = (Integer)bundle.get("smallImageSelected");
-        this.numVertical = (Integer)bundle.get("rowNumber");
-        this.numHorizontal = (Integer)bundle.get("columnNumber");
-        this.numClusters = this.numHorizontal * this.numVertical;
+        if (bundle.get("imageSelected") == null) {
+            this.userImageUri = Uri.parse( (String)bundle.get("userImageUri") );
 
+            try {
+                this.imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), this.userImageUri);
+            }
+            catch (Exception except) {
+                Log.e(TAG, "There was an error loading the userBitmap");
+                finish();
+            }
+        }
+        else {
+            this.imageId = (Integer)bundle.get("imageSelected");
+            this.imageBitmap = BitmapFactory.decodeResource(this.getResources(), this.imageId);
+        }
+
+        this.numClusters = this.numHorizontal * this.numVertical;
         this.setGameParametersCommon();
     }
 
@@ -272,6 +290,7 @@ public class ActivityJigsawGame extends AppCompatActivity {
         this.numHorizontal = this.savedState.numHorizontal;
         this.numClusters = this.numHorizontal * this.numVertical;
         this.startTimeInMilliseconds = Calendar.getInstance().getTimeInMillis() - this.savedState.durationInMiliseconds;
+        this.imageBitmap = this.savedState.imageBitmap;
 
         this.setGameParametersCommon();
     }
@@ -297,22 +316,19 @@ public class ActivityJigsawGame extends AppCompatActivity {
         this.startTimeInMilliseconds = Calendar.getInstance().getTimeInMillis();
     }
 
-    Bitmap getScaledImage(int imageId) {
-        Bitmap imageBitmap = BitmapFactory.decodeResource(this.getResources(), imageId);
-
+    void getScaledImage() {
         int newImageWidth = this.numHorizontal * this.getPieceDimension();
         int newImageHeight = this.numVertical * this.getPieceDimension();
 
-        Bitmap scaledImage = Bitmap.createScaledBitmap(imageBitmap, newImageWidth, newImageHeight, true);
-        if (scaledImage != imageBitmap) {
-            imageBitmap.recycle();
+        Bitmap scaledImage = Bitmap.createScaledBitmap(this.imageBitmap, newImageWidth, newImageHeight, true);
+        if (scaledImage != this.imageBitmap) {
+            this.imageBitmap.recycle();
         }
+        this.imageBitmap = scaledImage;
 
         Log.i(ActivityJigsawGame.TAG, "The newImage width is " + newImageWidth);
         Log.i(ActivityJigsawGame.TAG, "The newImage height is " + newImageHeight);
         Log.i(ActivityJigsawGame.TAG, "The pieceDimension is " + this.getPieceDimension());
-
-        return scaledImage;
     }
 
     void generateBorderMatrices() {
@@ -366,8 +382,6 @@ public class ActivityJigsawGame extends AppCompatActivity {
             piece.getView().bringToFront();
         }
 
-
-        this.imageBitmap.recycle();
         return list;
     }
 
@@ -393,6 +407,7 @@ public class ActivityJigsawGame extends AppCompatActivity {
         state.smallImageId = this.smallImageId;
         state.numHorizontal = this.numHorizontal;
         state.numVertical = this.numVertical;
+        state.imageBitmap = this.imageBitmap;
         state.durationInMiliseconds = Calendar.getInstance().getTimeInMillis() - this.startTimeInMilliseconds;
         state.nicheHeightToScreenRatio = (double) this.getNicheHeightDimension() / (double) this.getTotalScreenHeight();
 

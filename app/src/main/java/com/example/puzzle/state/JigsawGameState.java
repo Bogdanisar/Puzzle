@@ -1,18 +1,22 @@
 package com.example.puzzle.state;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
+
 import com.example.puzzle.jigsaw.JigsawPiece;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
 public class JigsawGameState implements Serializable {
-    public int imageId, smallImageId, numVertical, numHorizontal;
+    public Integer imageId, smallImageId, numVertical, numHorizontal;
     public long durationInMiliseconds;
     public double nicheHeightToScreenRatio;
     public ArrayList<ArrayList<Integer>> groupPieceList;
     public double[] groupTranslationRatioX;
     public double[] groupTranslationRatioY;
     public JigsawPiece.NICHE_STATE[][] rightMargin, bottomMargin;
+    public Bitmap imageBitmap;
 
     public JigsawGameState(int numGroups) {
         this.groupTranslationRatioX = new double[numGroups];

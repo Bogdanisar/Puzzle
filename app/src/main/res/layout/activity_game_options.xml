@@ -207,12 +207,12 @@
                 style="@style/gameoptionsButton"/>
 
             <View
-                android:layout_width="40px"
+                android:layout_width="30px"
                 android:layout_height="match_parent" />
 
             <Button
                 android:id="@+id/buttonChooseImage"
-                android:text="gallery image"
+                android:text="gallery"
                 android:onClick="chooseImage"
                 style="@style/gameoptionsButton"/>
 
