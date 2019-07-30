@@ -1,12 +1,10 @@
-package com.example.puzzle;
+package com.example.puzzle.gameOptions;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +12,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.puzzle.ActivityMain;
+import com.example.puzzle.R;
+import com.example.puzzle.jigsaw.ActivityJigsawGame;
+import com.example.puzzle.squareGame.ActivitySquareGame;
 
 import java.util.ArrayList;
 import java.util.List;

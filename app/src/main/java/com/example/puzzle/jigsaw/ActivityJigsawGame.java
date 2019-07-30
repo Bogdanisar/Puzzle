@@ -1,4 +1,4 @@
-package com.example.puzzle;
+package com.example.puzzle.jigsaw;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,7 +9,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
-import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -21,17 +20,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.puzzle.ActivityMain;
+import com.example.puzzle.R;
 import com.example.puzzle.history.HistoryItem;
 import com.example.puzzle.history.PieceGameHistory;
-import com.example.puzzle.jigsaw.JigsawPiece;
-import com.example.puzzle.jigsaw.JigsawPieceGroup;
-import com.example.puzzle.state.JigsawGameState;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;

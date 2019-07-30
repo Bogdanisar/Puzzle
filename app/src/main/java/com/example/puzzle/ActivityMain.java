@@ -6,6 +6,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.example.puzzle.about.ActivityAbout;
+import com.example.puzzle.gameOptions.ActivityGameOptions;
+import com.example.puzzle.history.ActivityHistory;
+import com.example.puzzle.settings.ActivitySettings;
+import com.example.puzzle.squareGame.ActivitySquareGame;
+
 public class ActivityMain extends AppCompatActivity {
     public static String COMMON_TAG = "puzzletag";
     public static String TAG = ActivityMain.COMMON_TAG;

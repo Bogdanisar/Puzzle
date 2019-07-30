@@ -1,9 +1,6 @@
 package com.example.puzzle.jigsaw;
 
 import android.graphics.Rect;
-import android.support.v7.view.menu.ActionMenuItem;
-
-import com.example.puzzle.ActivityJigsawGame;
 
 import java.util.LinkedList;
 import java.util.List;

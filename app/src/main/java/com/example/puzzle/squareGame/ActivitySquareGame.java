@@ -1,4 +1,4 @@
-package com.example.puzzle;
+package com.example.puzzle.squareGame;
 
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.puzzle.ActivityMain;
+import com.example.puzzle.R;
 import com.example.puzzle.history.HistoryItem;
 import com.example.puzzle.history.PieceGameHistory;
 
@@ -28,7 +30,7 @@ import java.util.ListIterator;
 import java.util.Random;
 
 public class ActivitySquareGame extends AppCompatActivity {
-    public static String TAG = ActivityMain.COMMON_TAG;
+    public String TAG = null;
     public static final String HISTORY_PREFERENCE_KEY = "PieceGameHistory";
 
     static int imageId = 0;
@@ -96,7 +98,7 @@ public class ActivitySquareGame extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_square_game);
-        ActivitySquareGame.TAG += this.getClass().getSimpleName();
+        this.TAG += ActivityMain.COMMON_TAG + this.getClass().getSimpleName();
 
         this.topLayout = findViewById(R.id.squareGamePuzzleLayout);
         this.setGameParameters();

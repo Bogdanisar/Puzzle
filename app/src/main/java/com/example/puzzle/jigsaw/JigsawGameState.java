@@ -1,4 +1,4 @@
-package com.example.puzzle.state;
+package com.example.puzzle.jigsaw;
 
 import android.graphics.Bitmap;
 import android.net.Uri;

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:layout_weight="1.0"
-    tools:context=".ActivityJigsawGame">
+    tools:context=".jigsaw.ActivityJigsawGame">
 
     <android.support.v7.widget.LinearLayoutCompat
         android:layout_alignParentTop="true"

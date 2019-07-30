@@ -1,10 +1,12 @@
-package com.example.puzzle;
+package com.example.puzzle.squareGame;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.content.ContextCompat;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import com.example.puzzle.R;
 
 import java.util.Random;
 

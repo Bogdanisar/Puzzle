@@ -1,13 +1,15 @@
-package com.example.puzzle;
+package com.example.puzzle.about;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class ActivitySettings extends AppCompatActivity {
+import com.example.puzzle.R;
+
+public class ActivityAbout extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        setContentView(R.layout.activity_about);
     }
 }

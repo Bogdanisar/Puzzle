@@ -1,4 +1,4 @@
-package com.example.puzzle;
+package com.example.puzzle.history;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -8,8 +8,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.example.puzzle.history.HistoryItem;
-import com.example.puzzle.history.PieceGameHistory;
+import com.example.puzzle.jigsaw.ActivityJigsawGame;
+import com.example.puzzle.ActivityMain;
+import com.example.puzzle.squareGame.ActivitySquareGame;
+import com.example.puzzle.R;
 
 import java.util.Collections;
 import java.util.LinkedList;

@@ -8,12 +8,8 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-
-import com.example.puzzle.ActivityJigsawGame;
-import com.example.puzzle.ActivityMain;
 
 import java.util.LinkedList;
 
