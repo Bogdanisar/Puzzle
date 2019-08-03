@@ -10,12 +10,9 @@ import com.example.puzzle.about.ActivityAbout;
 import com.example.puzzle.gameOptions.ActivityGameOptions;
 import com.example.puzzle.history.ActivityHistory;
 import com.example.puzzle.settings.ActivitySettings;
-import com.example.puzzle.squareGame.ActivitySquareGame;
 
 public class ActivityMain extends AppCompatActivity {
-    public static String COMMON_TAG = "puzzletag";
-    public static String TAG = ActivityMain.COMMON_TAG;
-    public static String SEPARATOR = "===================================================================";
+    public static String TAG = Constants.COMMON_TAG + "ActivityMain";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,14 +22,6 @@ public class ActivityMain extends AppCompatActivity {
         TAG += this.getClass().getSimpleName();
 
         Log.i(TAG, "test");
-    }
-
-    public void test(View view) {
-        Intent intent = new Intent(this, ActivitySquareGame.class);
-//        String message = mMessageEditText.getText().toString();
-//        intent.putExtra(EXTRA_MESSAGE, message);
-//        startActivityForResult(intent, TEXT_REQUEST);
-        startActivity(intent);
     }
 
     public void startGame(View view) {

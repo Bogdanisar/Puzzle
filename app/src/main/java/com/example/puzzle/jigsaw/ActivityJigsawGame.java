@@ -21,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.puzzle.ActivityMain;
+import com.example.puzzle.Constants;
 import com.example.puzzle.R;
 import com.example.puzzle.history.HistoryItem;
 import com.example.puzzle.history.PieceGameHistory;
@@ -35,7 +36,7 @@ import java.util.Random;
 import static java.lang.Float.NaN;
 
 public class ActivityJigsawGame extends AppCompatActivity {
-    public static final String TAG = ActivityMain.COMMON_TAG + "_JigsawGame";
+    public static final String TAG = Constants.COMMON_TAG + "_JigsawGame";
     public static final String HISTORY_PREFERENCE_KEY = "JigsawGameHistory";
     public static final String SAVED_STATE_KEY = "JigsawGameState";
 
@@ -304,7 +305,7 @@ public class ActivityJigsawGame extends AppCompatActivity {
 
         Log.i(ActivityJigsawGame.TAG, "nicheWidthDimension = " + this.getNicheWidthDimension());
         Log.i(ActivityJigsawGame.TAG, "piecePositionError = " + this.getPiecePositionError());
-        Log.i(ActivityJigsawGame.TAG, ActivityMain.SEPARATOR);
+        Log.i(ActivityJigsawGame.TAG, Constants.SEPARATOR);
 
 
         this.startTimeInMilliseconds = Calendar.getInstance().getTimeInMillis();
@@ -401,7 +402,6 @@ public class ActivityJigsawGame extends AppCompatActivity {
         state.smallImageId = this.smallImageId;
         state.numHorizontal = this.numHorizontal;
         state.numVertical = this.numVertical;
-        state.imageBitmap = this.imageBitmap;
         state.durationInMiliseconds = Calendar.getInstance().getTimeInMillis() - this.startTimeInMilliseconds;
         state.nicheHeightToScreenRatio = (double) this.getNicheHeightDimension() / (double) this.getTotalScreenHeight();
 
@@ -430,7 +430,7 @@ public class ActivityJigsawGame extends AppCompatActivity {
         state.bottomMargin = this.bottomMargin;
 
 
-//        Log.i(ActivityJigsawGame.TAG, ActivityMain.SEPARATOR);
+//        Log.i(ActivityJigsawGame.TAG, Constants.SEPARATOR);
 //        Log.i(ActivityJigsawGame.TAG, "IN SAVEINSTACESTATE:");
 //        Log.i(ActivityJigsawGame.TAG, "screenHeight = " + this.getTotalScreenHeight());
 //        Log.i(ActivityJigsawGame.TAG, "screenWidth = " + this.getTotalScreenWidth());
@@ -438,7 +438,7 @@ public class ActivityJigsawGame extends AppCompatActivity {
 //        Log.i(ActivityJigsawGame.TAG, "containerHeight = " + this.getContainerHeight());
 //        Log.i(ActivityJigsawGame.TAG, "saved ratioX = " + Arrays.toString(state.groupTranslationRatioX));
 //        Log.i(ActivityJigsawGame.TAG, "saved ratioY = " + Arrays.toString(state.groupTranslationRatioY));
-//        Log.i(ActivityJigsawGame.TAG, ActivityMain.SEPARATOR);
+//        Log.i(ActivityJigsawGame.TAG, Constants.SEPARATOR);
 
 
 
@@ -639,7 +639,7 @@ public class ActivityJigsawGame extends AppCompatActivity {
         Log.i(ActivityJigsawGame.TAG, "trying to resize to newNicheWidthDimension: " + newNicheWidthDimension);
         Log.i(ActivityJigsawGame.TAG, "trying to resize to newPieceDimension: " + newPieceDimension);
         Log.i(ActivityJigsawGame.TAG, "trying to resize to bigPieceDimension: " + bigPieceDimension);
-        Log.i(ActivityJigsawGame.TAG, ActivityMain.SEPARATOR);
+        Log.i(ActivityJigsawGame.TAG, Constants.SEPARATOR);
 
         if (bigPieceDimension <= this.getMaximumPieceDimension()) {
             this.resizePieces(newNicheHeightDimension);
@@ -656,7 +656,7 @@ public class ActivityJigsawGame extends AppCompatActivity {
         Log.i(ActivityJigsawGame.TAG, "trying to resize to newNicheWidthDimension: " + newNicheWidthDimension);
         Log.i(ActivityJigsawGame.TAG, "trying to resize to newPieceDimension: " + newPieceDimension);
         Log.i(ActivityJigsawGame.TAG, "trying to resize to bigPieceDimension: " + bigPieceDimension);
-        Log.i(ActivityJigsawGame.TAG, ActivityMain.SEPARATOR);
+        Log.i(ActivityJigsawGame.TAG, Constants.SEPARATOR);
 
         if (this.getMinimumPieceDimension() <= bigPieceDimension) {
             this.resizePieces(newNicheHeightDimension);

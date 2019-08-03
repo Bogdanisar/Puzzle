@@ -11,7 +11,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".settings.ActivitySettings"></activity>
+        <activity android:name=".squareGame.SGOnePiece"></activity>
+        <activity android:name=".squareGame.SGShell" />
+        <activity android:name=".squareGame.SGSimple" />
+        <activity android:name=".settings.ActivitySettings" />
         <activity android:name=".about.ActivityAbout" />
         <activity android:name=".jigsaw.ActivityJigsawGame" />
         <activity android:name=".history.ActivityHistory" />
@@ -24,7 +27,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.puzzle.ActivityMain" />
         </activity>
-        <activity android:name=".squareGame.ActivitySquareGame" />
         <activity android:name=".ActivityMain">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

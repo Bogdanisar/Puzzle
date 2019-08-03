@@ -8,9 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.example.puzzle.Constants;
 import com.example.puzzle.jigsaw.ActivityJigsawGame;
-import com.example.puzzle.ActivityMain;
-import com.example.puzzle.squareGame.ActivitySquareGame;
 import com.example.puzzle.R;
 
 import java.util.Collections;
@@ -18,7 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ActivityHistory extends AppCompatActivity {
-    public static String TAG = ActivityMain.COMMON_TAG + "_ActivityHistory";
+    public static String TAG = Constants.COMMON_TAG + "_ActivityHistory";
 
     private List<PieceGameHistory> getHistoryItems(String key, SharedPreferences preferences) {
         return PieceGameHistory.getInstanceArray(preferences.getString(key, ""));
@@ -32,7 +31,7 @@ public class ActivityHistory extends AppCompatActivity {
         LinearLayout layout = findViewById(R.id.historyItemLinearLayout);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String[] historyItemKeys = {
-                ActivitySquareGame.HISTORY_PREFERENCE_KEY,
+                Constants.KEY_HISTORY_PIECEGAME,
                 ActivityJigsawGame.HISTORY_PREFERENCE_KEY
         };
 
@@ -43,7 +42,7 @@ public class ActivityHistory extends AppCompatActivity {
             for (HistoryItem item : items) {
                 Log.i(ActivityHistory.TAG, "itemGamemode = " + item.getGamemode());
                 Log.i(ActivityHistory.TAG, "item.toString() = " + item.toString());
-                Log.i(ActivityHistory.TAG, ActivityMain.SEPARATOR);
+                Log.i(ActivityHistory.TAG, Constants.SEPARATOR);
             }
 
             allHistoryItems.addAll(items);

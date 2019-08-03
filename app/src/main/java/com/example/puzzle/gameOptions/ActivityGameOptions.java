@@ -13,16 +13,18 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.puzzle.ActivityMain;
+import com.example.puzzle.Constants;
 import com.example.puzzle.R;
 import com.example.puzzle.jigsaw.ActivityJigsawGame;
-import com.example.puzzle.squareGame.ActivitySquareGame;
+import com.example.puzzle.squareGame.SGOnePiece;
+import com.example.puzzle.squareGame.SGShell;
+import com.example.puzzle.squareGame.SGSimple;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ActivityGameOptions extends AppCompatActivity {
-    public static String TAG = ActivityMain.COMMON_TAG + "ActivityGameOptions";
+    public static String TAG = Constants.COMMON_TAG + "ActivityGameOptions";
     public static int GALLERY_IMAGE_INTENT = 1;
 
     public static final int minPieces = 3;
@@ -31,9 +33,7 @@ public class ActivityGameOptions extends AppCompatActivity {
     private EditText rowInput;
     private EditText columnInput;
     private Integer imageSelected = null;
-    private Integer imageSelectedPrior = null;
     private Integer gamemodeSelected = null;
-    private Integer gamemodeSelectedPrior = null;
 
     private List<Integer> imageViewArray = new ArrayList<>();
     private List<Integer> imageResourceArray = new ArrayList<>();
@@ -90,7 +90,7 @@ public class ActivityGameOptions extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game_options);
+        super.setContentView(R.layout.activity_game_options);
 
         TAG += this.getClass().getSimpleName();
 
@@ -171,16 +171,13 @@ public class ActivityGameOptions extends AppCompatActivity {
 
         Intent intent = null;
         if (gamemodeSelected.equals(R.id.gamemodeSquareGameView)) {
-            intent = new Intent(this, ActivitySquareGame.class);
-            intent.putExtra("type", "simple");
+            intent = new Intent(this, SGSimple.class);
         }
         else if (gamemodeSelected.equals(R.id.gamemodeSquareGameShellView)) {
-            intent = new Intent(this, ActivitySquareGame.class);
-            intent.putExtra("type", "shell");
+            intent = new Intent(this, SGShell.class);
         }
         else if (gamemodeSelected.equals(R.id.gamemodeSquareGameOnePieceView)) {
-            intent = new Intent(this, ActivitySquareGame.class);
-            intent.putExtra("type", "onePiece");
+            intent = new Intent(this, SGOnePiece.class);
         }
         else if (gamemodeSelected.equals(R.id.gamemodeJigsawGameView)) {
             intent = new Intent(this, ActivityJigsawGame.class);
@@ -238,11 +235,11 @@ public class ActivityGameOptions extends AppCompatActivity {
             return;
         }
 
-        this.imageSelectedPrior = this.imageSelected;
+        Integer imageSelectedPrior = this.imageSelected;
         this.imageSelected = view.getId();
 
         this.applyBackgroundFromId(view, R.color.colorAccent);
-        this.removeBackground(this.imageSelectedPrior);
+        this.removeBackground(imageSelectedPrior);
     }
 
     public void selectGamemode(View view) {
@@ -250,11 +247,11 @@ public class ActivityGameOptions extends AppCompatActivity {
             return;
         }
 
-        this.gamemodeSelectedPrior = this.gamemodeSelected;
+        Integer gamemodeSelectedPrior = this.gamemodeSelected;
         this.gamemodeSelected = view.getId();
 
         this.applyBackgroundFromId(view, R.color.colorAccentText);
-        this.removeBackground(this.gamemodeSelectedPrior);
+        this.removeBackground(gamemodeSelectedPrior);
     }
 
 
@@ -273,9 +270,8 @@ public class ActivityGameOptions extends AppCompatActivity {
             final Uri uri = intent.getData();
             this.userBitmapUri = uri;
 
-            this.imageSelectedPrior = this.imageSelected;
+            this.removeBackground(this.imageSelected);
             this.imageSelected = null;
-            this.removeBackground(this.imageSelectedPrior);
         }
     }
 }
