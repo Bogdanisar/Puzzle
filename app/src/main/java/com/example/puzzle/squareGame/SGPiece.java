@@ -21,12 +21,15 @@ public class SGPiece {
 
     Context context;
     Bitmap originalCanvas, originalPieceImage;
-    int numHorizontal, numVertical, pieceWidth, pieceHeight, containerWidth, containerHeight;
+    int numHorizontal, numVertical, containerWidth, containerHeight;
     int targeti, targetj;
     double containerRatioX, containerRatioY;
     int[] outerColor;
     int[] innerColor;
     public ImageView imageView;
+
+    int genericPieceWidth, genericPieceHeight;
+    int currentPieceWidth, currentPieceHeight;
 
 
     private SGPiece() {}
@@ -40,8 +43,8 @@ public class SGPiece {
             this.piece.originalCanvas = imageBitmap;
             this.piece.numHorizontal = numHoriz;
             this.piece.numVertical = numVert;
-            this.piece.pieceWidth = pWidth;
-            this.piece.pieceHeight = pHeight;
+            this.piece.genericPieceWidth = pWidth;
+            this.piece.genericPieceHeight = pHeight;
 
             Random rand = new Random();
             this.setPosition(rand.nextInt(this.piece.numHorizontal * this.piece.numVertical));
@@ -76,21 +79,107 @@ public class SGPiece {
         }
     }
 
+    public int getGenericPieceWidth() {
+        return genericPieceWidth;
+    }
+
+    public int getGenericPieceHeight() {
+        return genericPieceHeight;
+    }
+
+    public int getCurrentPieceWidth() {
+        return currentPieceWidth;
+    }
+
+    public int getCurrentPieceHeight() {
+        return currentPieceHeight;
+    }
+
+    public static int getBorderSize() {
+        return borderSize;
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public Bitmap getOriginalCanvas() {
+        return originalCanvas;
+    }
+
+    public Bitmap getOriginalPieceImage() {
+        return originalPieceImage;
+    }
+
+    public int getNumHorizontal() {
+        return numHorizontal;
+    }
+
+    public int getNumVertical() {
+        return numVertical;
+    }
+
+    public int getContainerWidth() {
+        return containerWidth;
+    }
+
+    public int getContainerHeight() {
+        return containerHeight;
+    }
+
+    public int getTargeti() {
+        return targeti;
+    }
+
+    public int getTargetj() {
+        return targetj;
+    }
+
+    public double getContainerRatioX() {
+        return containerRatioX;
+    }
+
+    public double getContainerRatioY() {
+        return containerRatioY;
+    }
+
+    public int[] getOuterColor() {
+        return outerColor;
+    }
+
+    public int[] getInnerColor() {
+        return innerColor;
+    }
+
+    public ImageView getImageView() {
+        return imageView;
+    }
+
     private void setup() {
+        int x = this.targetj * this.genericPieceWidth;
+        int y = this.targeti * this.genericPieceHeight;
 
-        int subImageWidth = this.originalCanvas.getWidth() / this.numHorizontal;
-        int subImageHeight = this.originalCanvas.getHeight() / this.numVertical;
-        int x = this.targetj * subImageWidth;
-        int y = this.targeti * subImageHeight;
+        if (this.targetj == this.numHorizontal - 1) {
+            this.currentPieceWidth = this.containerWidth - x;
+        }
+        else {
+            this.currentPieceWidth = this.genericPieceWidth;
+        }
 
-        this.originalPieceImage = Bitmap.createBitmap(this.originalCanvas, x, y, subImageWidth, subImageHeight);
-        this.originalPieceImage = Utils.scaleBitmapAndRecycle(this.originalPieceImage, this.pieceWidth, this.pieceHeight);
+        if (this.targeti == this.numVertical - 1) {
+            this.currentPieceHeight = this.containerHeight - y;
+        }
+        else {
+            this.currentPieceHeight = this.genericPieceHeight;
+        }
+
+        this.originalPieceImage = Bitmap.createBitmap(this.originalCanvas, x, y, this.currentPieceWidth, this.currentPieceHeight);
 
         this.imageView = new ImageView(this.context);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(this.pieceWidth, this.pieceHeight);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(this.currentPieceWidth, this.currentPieceHeight);
 
-        params.leftMargin = Utils.getMargin(this.containerWidth, this.pieceWidth, this.containerRatioX);
-        params.topMargin = Utils.getMargin(this.containerHeight, this.pieceHeight , this.containerRatioY);
+        params.leftMargin = SGUtils.getMargin(this.containerWidth, this.currentPieceWidth, this.containerRatioX);
+        params.topMargin = SGUtils.getMargin(this.containerHeight, this.currentPieceHeight, this.containerRatioY);
 
         params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);

@@ -1,6 +1,8 @@
 package com.example.puzzle;
 
 import android.graphics.Bitmap;
+import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.example.puzzle.squareGame.SGPiece;
 
@@ -19,7 +21,12 @@ public class Utils {
     }
 
 
+    public static Bitmap copyBitmap(Bitmap original) {
+        return original.copy(original.getConfig(), true);
+    }
 
+    // you shouldn't use the bitmap parameter of this function after calling it.
+    // i.e.: you should use it in this fashion: bmao = scaleBitmapAndRecycle(bmap, width, height);
     public static Bitmap scaleBitmapAndRecycle(Bitmap original, int newWidth, int newHeight) {
         Bitmap scaledOriginal = Bitmap.createScaledBitmap(original, newWidth, newHeight, true);
         if (original != scaledOriginal) {
@@ -27,12 +34,6 @@ public class Utils {
         }
 
         return scaledOriginal;
-    }
-
-    public static int getMargin(int totalSize, int pieceSize, double sizeRatio) {
-        int exclusiveLimit = totalSize - pieceSize + 1;
-        int margin = (int)(sizeRatio * exclusiveLimit);
-        return margin;
     }
 
 

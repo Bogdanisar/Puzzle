@@ -3,9 +3,9 @@ package com.example.puzzle.squareGame;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -33,7 +33,6 @@ public class SGSimple extends AppCompatActivity {
     protected int pieceWidth = 0;
     protected int pieceHeight = 0;
 
-    protected int minX, minY, maxX, maxY;
     protected boolean hasAttached = false;
     protected int attachedOffsetX = 0, attachedOffsetY = 0;
 
@@ -96,7 +95,6 @@ public class SGSimple extends AppCompatActivity {
 
         this.topLayout = this.getTopLayout();
         this.setGameParameters();
-        this.setLimits();
 
         this.setup();
 
@@ -108,21 +106,13 @@ public class SGSimple extends AppCompatActivity {
         this.numVertical = this.initState.numVertical;
         this.numHorizontal = this.initState.numHorizontal;
         this.smallImageId = this.initState.smallImageId;
-        this.imageBitmap = this.initState.imageBitmap;
+        this.imageBitmap = Utils.scaleBitmapAndRecycle(this.initState.imageBitmap, this.getContainerWidth(), this.getContainerHeight());
 
         this.startTimeInMilliseconds = Calendar.getInstance().getTimeInMillis() - this.initState.duration;
 
         this.pieceMatrix = new SGPiece[this.numVertical][this.numHorizontal];
         this.pieceWidth = this.getContainerWidth() / this.numHorizontal;
         this.pieceHeight = this.getContainerHeight() / this.numVertical;
-    }
-
-    public void setLimits() {
-        this.minX = 0;
-        this.minY = 0;
-
-        this.maxX = this.getContainerWidth() - this.pieceWidth;
-        this.maxY = this.getContainerHeight() - this.pieceHeight;
     }
 
     protected SGPiece makePiece(int pos) {
@@ -162,9 +152,9 @@ public class SGSimple extends AppCompatActivity {
 
             double ratioX = this.initState.pieceContentRatioX[pos];
             double ratioY = this.initState.pieceContentRatioY[pos];
-            int leftMargin = Utils.getMargin(this.getContainerWidth(), this.pieceWidth, ratioX);
-            int topMargin = Utils.getMargin(this.getContainerHeight(), this.pieceHeight, ratioY);
-            this.changePosition(piece.imageView, leftMargin, topMargin);
+            int leftMargin = SGUtils.getMargin(this.getContainerWidth(), this.pieceWidth, ratioX);
+            int topMargin = SGUtils.getMargin(this.getContainerHeight(), this.pieceHeight, ratioY);
+            SGUtils.changeSGPiecePosition(piece, leftMargin, topMargin, this.attachedOffsetX, this.attachedOffsetY);
         }
     }
 
@@ -206,37 +196,6 @@ public class SGSimple extends AppCompatActivity {
         if (this.imageBitmap != null) {
             this.imageBitmap.recycle();
         }
-    }
-
-
-
-    // methods for piece drag & drop and manipulation;
-    public void changePosition(View v, float x, float y) {
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) v.getLayoutParams();
-
-        int newX = (int)x - this.attachedOffsetX;
-        newX = Math.max(newX, this.minX);
-        newX = Math.min(newX, this.maxX);
-
-        int newY = (int)y - this.attachedOffsetY;
-        newY = Math.max(newY, this.minY);
-        newY = Math.min(newY, this.maxY);
-
-        params.leftMargin = newX;
-        params.topMargin = newY;
-        v.requestLayout();
-    }
-
-    protected boolean pointIsInsideView(View v, int x, int y) {
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) v.getLayoutParams();
-
-        if (!(params.leftMargin <= x && x < params.leftMargin + params.width)) {
-            return false;
-        }
-        if (!(params.topMargin <= y && y < params.topMargin + params.height)) {
-            return false;
-        }
-        return true;
     }
 
     protected void updateHistory() {
@@ -301,27 +260,6 @@ public class SGSimple extends AppCompatActivity {
         return true;
     }
 
-    protected boolean pieceIsCloseEnough(SGPiece piece, int eventX, int eventY) {
-        int cornerX = eventX - this.attachedOffsetX;
-        cornerX = Math.max(cornerX, this.minX);
-        cornerX = Math.min(cornerX, this.maxX);
-
-        int cornerY = eventY - this.attachedOffsetY;
-        cornerY = Math.max(cornerY, this.minY);
-        cornerY = Math.min(cornerY, this.maxY);
-
-        int errorX = this.pieceWidth / 3;
-        int errorY = this.pieceHeight / 3;
-
-        int targetX = piece.targetj * this.pieceWidth;
-        int targetY = piece.targeti * this.pieceHeight;
-
-        if (Math.abs(targetX - cornerX) <= errorX && Math.abs(targetY - cornerY) <= errorY) {
-            return true;
-        }
-        return false;
-    }
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int eventX = (int)event.getX();
@@ -337,7 +275,7 @@ public class SGSimple extends AppCompatActivity {
             while (it.hasNext()) {
                 SGPiece piece = it.next();
 
-                if (this.pointIsInsideView(piece.imageView, eventX, eventY)) {
+                if (SGUtils.pointIsInsideView(piece.imageView, eventX, eventY)) {
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) piece.imageView.getLayoutParams();
                     this.attachedOffsetX = eventX - params.leftMargin;
                     this.attachedOffsetY = eventY - params.topMargin;
@@ -361,7 +299,7 @@ public class SGSimple extends AppCompatActivity {
 
             Log.i(this.TAG, "pieceCanBePlaced: " + this.pieceCanBePlaced(piece)); /////////////////////////////////////////////
 
-            if ( (this.pieceCanBePlaced(piece)) && this.pieceIsCloseEnough(piece, eventX, eventY) ) {
+            if ( (this.pieceCanBePlaced(piece)) && SGUtils.isSGPieceCloseEnough(piece, eventX, eventY, this.attachedOffsetX, this.attachedOffsetY) ) {
                 placePiece(piece);
             }
 
@@ -369,7 +307,7 @@ public class SGSimple extends AppCompatActivity {
         }
         else if (event.getAction() == MotionEvent.ACTION_MOVE) {
             if (this.hasAttached) {
-                this.changePosition(this.pieceList.getFirst().imageView, eventX, eventY);
+                SGUtils.changeSGPiecePosition(this.pieceList.getFirst(), eventX, eventY, this.attachedOffsetX, this.attachedOffsetY);
             }
 
 //            Log.i(TAG, "Movement at: " + Float.toString(eventX) + ", " + Float.toString(eventY));
