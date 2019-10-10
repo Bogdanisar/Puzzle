@@ -20,10 +20,10 @@ Also, before each game, the player must choose:
 
 
 Screenshots: 
-![Main menu](Screenshots/screen1.png)
-![Game select](Screenshots/screen2.png)
-![Jigsaw Game](Screenshots/screen3.png)
-![Jigsaw Game](Screenshots/screen4.png)
-![Square Game](Screenshots/screen5.png)
-![You won!](Screenshots/screen6.png)
-![History](Screenshots/screen7.png)
+![Main menu](Screenshots/screen1.jpeg)
+![Game select](Screenshots/screen2.jpeg)
+![Jigsaw Game](Screenshots/screen3.jpeg)
+![Jigsaw Game](Screenshots/screen4.jpeg)
+![Square Game](Screenshots/screen5.jpeg)
+![You won!](Screenshots/screen6.jpeg)
+![History](Screenshots/screen7.jpeg)
