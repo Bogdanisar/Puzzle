@@ -22,14 +22,14 @@ Also, before each game, the player must choose:
 Screenshots: 
 
 <p align="center">
-  <img src="Screenshots/screen1.jpeg" alt="Main menu" width="200"/> <img src="Screenshots/screen2.jpeg" alt="Game select" width="200"/> <img src="Screenshots/screen3.jpeg" alt="Jigsaw Game" width="200"/>
+  <img src="Screenshots/screen1.jpeg" alt="Main menu" width="280"/> <img src="Screenshots/screen2.jpeg" alt="Game select" width="280"/> <img src="Screenshots/screen3.jpeg" alt="Jigsaw Game" width="280"/>
 </p>
 
 <p align="center">
-  <img src="Screenshots/screen4.jpeg" align="center" alt="Jigsaw Game" height="200"/>
+  <img src="Screenshots/screen4.jpeg" align="center" alt="Jigsaw Game" height="280"/>
 </p>
 
 <p align="center">
-  <img src="Screenshots/screen5.jpeg" alt="Square Game" width="200"/> <img src="Screenshots/screen6.jpeg" alt="You won!" width="200"/> <img src="Screenshots/screen7.jpeg" alt="History" width="200"/>
+  <img src="Screenshots/screen5.jpeg" alt="Square Game" width="280"/> <img src="Screenshots/screen6.jpeg" alt="You won!" width="280"/> <img src="Screenshots/screen7.jpeg" alt="History" width="280"/>
 </p>
 
